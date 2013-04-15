@@ -12,7 +12,7 @@ public class EnvironnementVue extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private final Environnement env;
-	public final long refreshRate = 40; // Rafraîchis toutes les refreshRate ms.
+	public final long refreshRate = 40; // Rafraîchit toutes les refreshRate ms.
 
 	public EnvironnementVue(Environnement env) {
 		this.env = env;

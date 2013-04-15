@@ -18,8 +18,9 @@ public class BlackBoard {
 		this.enemiPos = new HashMap<Agent, Point>();
 	}
 
-	public void write(String message) {
-		// TODO Implement blackboard.
+	public void ecrire(String message) {
+		// TODO Implementer blackboard.
+		// Les fonctions peuvent encore être modifiés.
 	}
 
 }

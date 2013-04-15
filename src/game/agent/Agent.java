@@ -4,10 +4,13 @@
  */
 package game.agent;
 
+import game.Environnement;
+import game.agent.etat.Etat;
+import game.agent.etat.EtatAttaque;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.ArrayList;
 
 import display.IDessinable;
 
@@ -26,23 +29,29 @@ public class Agent implements Runnable, IDessinable {
 	private final Mouvement mouvement;
 	private double vitesse;
 
-	public Agent() {
-		this.equipe = new Equipe(TagEquipe.EST);
+	private final Environnement environnement;
+
+	// TODO Ajouter orientation. Point, angle ?
+
+	public Agent(Equipe equipe, Point position, Environnement env) {
+		this.equipe = equipe;
+		equipe.addAgent(this);
+		this.environnement = env;
+
+		this.mouvement = new Mouvement(this);
+		this.etat = new EtatAttaque();
+
 		this.vieMax = 100;
 		this.vieActuelle = 90;
-		this.position = new Point(200, 500);
-		this.mouvement = new Mouvement(this);
+		this.position = position;
 		this.vitesse = 60;
-		ArrayList<Point> array = new ArrayList<Point>();
-		array.add(new Point(100, 100));
-		array.add(new Point(200, 300));
-		array.add(new Point(100, 400));
-		mouvement.setDestinations(array);
 	}
 
 	@Override
 	public void run() {
+		etat.entre(this, environnement);
 		while (true) {
+			etat.action(this, environnement);
 			mouvement.bouger();
 		}
 	}
@@ -71,6 +80,14 @@ public class Agent implements Runnable, IDessinable {
 		return vitesse;
 	}
 
+	public Mouvement getMouvement() {
+		return mouvement;
+	}
+
+	public Equipe getEquipe() {
+		return equipe;
+	}
+
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(equipe.getCouleur());
@@ -84,5 +101,13 @@ public class Agent implements Runnable, IDessinable {
 
 	public boolean memeEquipe(Agent agent) {
 		return this.equipe.getTag() == agent.equipe.getTag();
+	}
+
+	public Etat getEtat() {
+		return etat;
+	}
+
+	public void setEtat(Etat etat) {
+		this.etat = etat;
 	}
 }

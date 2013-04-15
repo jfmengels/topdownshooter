@@ -23,6 +23,7 @@ public class Mouvement {
 		tempsDepart = System.currentTimeMillis();
 		posDepart = agent.getPosition();
 		estimeTemps();
+		// TODO Changer orientation
 	}
 
 	public void setDestination(Point dest) {
@@ -31,10 +32,15 @@ public class Mouvement {
 		tempsDepart = System.currentTimeMillis();
 		posDepart = agent.getPosition();
 		estimeTemps();
+		// TODO Changer orientation
 	}
 
+	/**
+	 * Bouge l'agent.
+	 */
 	public void bouger() {
 		long tempsMis;
+		boolean changeDirection = false;
 		if (destination.size() > 0) {
 			tempsMis = System.currentTimeMillis() - tempsDepart;
 			while (tempsMis >= tempsEstime) {
@@ -43,6 +49,7 @@ public class Mouvement {
 				destination.remove(0);
 				if (destination.size() > 0) {
 					estimeTemps();
+					changeDirection = true;
 				} else {
 					agent.setPosition(posDepart);
 					break;
@@ -57,6 +64,9 @@ public class Mouvement {
 				int y = posDepart.y + (int) (dy * ratio);
 				agent.setPosition(x, y);
 			}
+		}
+		if (changeDirection) {
+			// TODO Changer orientation
 		}
 	}
 
