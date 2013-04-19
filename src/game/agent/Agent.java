@@ -30,6 +30,7 @@ public class Agent implements Runnable, IDessinable {
 	private double vitesse;
 
 	private final Environnement environnement;
+	private boolean threadRunning;
 
 	// TODO Ajouter orientation. Point, angle ?
 
@@ -49,11 +50,19 @@ public class Agent implements Runnable, IDessinable {
 
 	@Override
 	public void run() {
+		threadRunning = true;
 		etat.entre(this, environnement);
-		while (true) {
+		while (threadRunning) {
 			etat.action(this, environnement);
 			mouvement.bouger();
 		}
+	}
+
+	/**
+	 * Arrete le thread courant.
+	 */
+	public void terminate() {
+		threadRunning = false;
 	}
 
 	public Point getPosition() {
@@ -74,6 +83,23 @@ public class Agent implements Runnable, IDessinable {
 
 	public int getVieMax() {
 		return vieMax;
+	}
+
+	/**
+	 * Touche l'agent lorsqu'on lui tire dessus.
+	 * @param pv Points de vie à retirer.
+	 * @return True si l'agent est encore en vie ensuite, false sinon.
+	 */
+	public boolean toucher(int pv) {
+		vieActuelle -= pv;
+		if (vieActuelle < 0) {
+			vieActuelle = 0;
+		}
+		return estEnVie();
+	}
+
+	public boolean estEnVie() {
+		return vieActuelle > 0;
 	}
 
 	public double getVitesse() {

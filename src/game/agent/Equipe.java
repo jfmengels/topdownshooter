@@ -31,6 +31,7 @@ public class Equipe {
 
 	public void addAgent(Agent agent) {
 		this.agents.add(agent);
+		this.blackBoard.addAgent(agent);
 	}
 
 	public TagEquipe getTag() {

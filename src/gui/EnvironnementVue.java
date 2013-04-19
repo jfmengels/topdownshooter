@@ -24,6 +24,8 @@ public class EnvironnementVue extends JPanel {
 
 	@Override
 	protected void paintComponent(Graphics g) {
+		// TODO Dessiner les angles de vue des agents.
+		// TODO Dessiner des cadavres (animation ?)
 		super.paintComponent(g);
 		for (Decor decor : env.getDecors()) {
 			decor.paint(g);
