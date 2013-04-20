@@ -18,4 +18,10 @@ public interface Etat {
 	 * @param env Environnement du jeu.
 	 */
 	public void action(Agent agent, Environnement env);
+
+	/**
+	 * Lis un message envoyé.
+	 * @param message Message à lire.
+	 */
+	public void recoitMessage(Agent agent, Environnement env, String message);
 }

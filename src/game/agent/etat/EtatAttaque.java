@@ -10,6 +10,7 @@ public class EtatAttaque implements Etat {
 
 	@Override
 	public void entre(Agent agent, Environnement env) {
+		System.out.println(agent.getId() + "\tAttaque");
 		Point cible = env.autreEquipe(agent.getEquipe()).getPosCible();
 		List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
 		agent.getMouvement().setDestinations(chemin);
@@ -25,7 +26,7 @@ public class EtatAttaque implements Etat {
 			agent.getMouvement().bouger();
 		}
 	}
-	
+
 	private void tirer(Agent source, Environnement env, Agent cible) {
 		// Si un enemi est en vue, on va le viser et lui tirer dessus.
 		// On attend un moment pour viser et rieer.
@@ -43,4 +44,11 @@ public class EtatAttaque implements Etat {
 			}
 		}
 	}
+
+	@Override
+	public void recoitMessage(Agent agent, Environnement env, String message) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

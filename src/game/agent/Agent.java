@@ -6,11 +6,12 @@ package game.agent;
 
 import game.Environnement;
 import game.agent.etat.Etat;
-import game.agent.etat.EtatAttaque;
+import game.agent.etat.EtatAttribution;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.Random;
 
 import display.IDessinable;
 
@@ -19,6 +20,8 @@ import display.IDessinable;
  */
 public class Agent implements Runnable, IDessinable {
 
+	private static int idCount;
+	private final int id;
 	private final Equipe equipe;
 	private Etat etat;
 
@@ -35,26 +38,28 @@ public class Agent implements Runnable, IDessinable {
 	// TODO Ajouter orientation. Point, angle ?
 
 	public Agent(Equipe equipe, Point position, Environnement env) {
+		synchronized (Agent.class) {
+			this.id = idCount++;
+		}
 		this.equipe = equipe;
 		equipe.addAgent(this);
 		this.environnement = env;
 
 		this.mouvement = new Mouvement(this);
-		this.etat = new EtatAttaque();
+		this.etat = new EtatAttribution();
 
 		this.vieMax = 100;
 		this.vieActuelle = 90;
 		this.position = position;
-		this.vitesse = 60;
+		this.vitesse = new Random().nextInt(30) + 50;
 	}
 
 	@Override
 	public void run() {
 		threadRunning = true;
-		etat.entre(this, environnement);
+		this.etat.entre(this, environnement);
 		while (threadRunning) {
-			etat.action(this, environnement);
-			mouvement.bouger();
+			this.etat.action(this, environnement);
 		}
 	}
 
@@ -135,5 +140,14 @@ public class Agent implements Runnable, IDessinable {
 
 	public void setEtat(Etat etat) {
 		this.etat = etat;
+		this.etat.entre(this, environnement);
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void recoitMessage(String message) {
+		this.etat.recoitMessage(this, environnement, message);
 	}
 }

@@ -25,8 +25,8 @@ public class Equipe {
 		}
 	}
 
-	public void ecrireTableau(String message) {
-		this.blackBoard.ecrire(message);
+	public void ecrireTableau(Agent source, String message) {
+		this.blackBoard.ecrire(source, message);
 	}
 
 	public void addAgent(Agent agent) {
@@ -44,5 +44,9 @@ public class Equipe {
 
 	public Point getPosCible() {
 		return posCible;
+	}
+
+	public List<Agent> getAgents() {
+		return agents;
 	}
 }

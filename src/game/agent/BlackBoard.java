@@ -24,9 +24,13 @@ public class BlackBoard {
 		}
 	}
 
-	public void ecrire(String message) {
-		// TODO Implementer blackboard.
-		// Les fonctions peuvent encore être modifiés.
+	public void ecrire(Agent agent, String message) {
+		System.out.println(agent.getId() + " envoie\t" + message);
+		for (Agent a : this.agents) {
+			if (a != agent) {
+				a.recoitMessage(message);
+			}
+		}
 	}
 
 	public void addAgent(Agent agent) {

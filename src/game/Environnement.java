@@ -54,7 +54,9 @@ public class Environnement extends JPanel {
 		decors.add(new Mur(new Point(300, 350), new Dimension(50, 100),
 				Color.darkGray));
 		agents.add(new Agent(est, new Point(200, 500), this));
-		agents.add(new Agent(ouest, new Point(300, 100), this));
+		//agents.add(new Agent(ouest, new Point(300, 100), this));
+		agents.add(new Agent(est, new Point(300, 100), this));
+		agents.add(new Agent(est, new Point(100, 100), this));
 	}
 
 	public void start() {
@@ -98,6 +100,9 @@ public class Environnement extends JPanel {
 	}
 
 	public List<Point> cheminVers(Point depart, Point destination) {
+		Point temp = depart;
+		depart = destination;
+		destination = temp;
 		boolean finished = false;
 		Set<Point> aTraiter = new HashSet<>();
 		aTraiter.add(depart);
@@ -212,6 +217,15 @@ public class Environnement extends JPanel {
 	}
 
 	public List<Point> chemin(List<Point> cameFrom, Point destination) {
+		return null;
+	}
+
+	public Agent getAgent(int id) {
+		for (Agent agent : this.agents) {
+			if (agent.getId() == id) {
+				return agent;
+			}
+		}
 		return null;
 	}
 }
