@@ -1,5 +1,7 @@
 package game.agent;
 
+import game.agent.etat.EtatOrganisation;
+
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ public class Equipe {
 	private final Color couleur;
 	private final Point posCible;
 	private final List<Point> posDefense;
+	private final EtatOrganisation organisation;
 
 	public Equipe(TagEquipe tag, Point cible) {
 		this.posCible = cible;
@@ -20,6 +23,8 @@ public class Equipe {
 		this.tag = tag;
 		this.blackBoard = new BlackBoard();
 		this.posDefense = new ArrayList<Point>();
+		this.organisation = new EtatOrganisation();
+
 		if (tag == TagEquipe.EST) {
 			this.couleur = new Color(100, 100, 250);
 		} else {
@@ -58,5 +63,9 @@ public class Equipe {
 
 	public void addPosDefense(Point pos) {
 		posDefense.add(pos);
+	}
+
+	public EtatOrganisation getOrganisation() {
+		return organisation;
 	}
 }
