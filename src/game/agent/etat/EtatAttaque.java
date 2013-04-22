@@ -32,7 +32,7 @@ public class EtatAttaque implements Etat {
 
 	private void tirer(Agent source, Environnement env, Agent cible) {
 		// Si un enemi est en vue, on va le viser et lui tirer dessus.
-		// On attend un moment pour viser et rieer.
+		// On attend un moment pour viser et tirer.
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {

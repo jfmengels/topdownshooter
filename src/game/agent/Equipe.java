@@ -12,12 +12,14 @@ public class Equipe {
 	private final BlackBoard blackBoard;
 	private final Color couleur;
 	private final Point posCible;
+	private final List<Point> posDefense;
 
 	public Equipe(TagEquipe tag, Point cible) {
 		this.posCible = cible;
 		this.agents = new ArrayList<Agent>();
 		this.tag = tag;
 		this.blackBoard = new BlackBoard();
+		this.posDefense = new ArrayList<Point>();
 		if (tag == TagEquipe.EST) {
 			this.couleur = new Color(100, 100, 250);
 		} else {
@@ -48,5 +50,13 @@ public class Equipe {
 
 	public List<Agent> getAgents() {
 		return agents;
+	}
+
+	public List<Point> getPosDefense() {
+		return posDefense;
+	}
+
+	public void addPosDefense(Point pos) {
+		posDefense.add(pos);
 	}
 }

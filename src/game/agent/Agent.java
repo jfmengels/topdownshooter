@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package game.agent;
 
 import game.Environnement;
@@ -15,9 +11,6 @@ import java.util.Random;
 
 import display.IDessinable;
 
-/**
- * @author Florent
- */
 public class Agent implements Runnable, IDessinable {
 
 	private static int idCount;
@@ -32,6 +25,7 @@ public class Agent implements Runnable, IDessinable {
 	private final Mouvement mouvement;
 	private final double vitesse;
 	private final int portee;
+	private final int degats;
 
 	private final Environnement environnement;
 	private boolean threadRunning;
@@ -42,19 +36,23 @@ public class Agent implements Runnable, IDessinable {
 		synchronized (Agent.class) {
 			this.id = idCount++;
 		}
+
+		Random rand = new Random();
+
 		this.equipe = equipe;
-		equipe.addAgent(this);
+		this.position = position;
 		this.environnement = env;
+
+		equipe.addAgent(this);
 
 		this.mouvement = new Mouvement(this);
 		this.etat = new EtatAttribution();
 
-		this.vieMax = 100;
-		this.vieActuelle = 90;
-		this.position = position;
-		Random rand = new Random();
+		this.vieMax = rand.nextInt(20) + 80;
+		this.vieActuelle = this.vieMax;
 		this.vitesse = rand.nextInt(30) + 50;
 		this.portee = rand.nextInt(30) + 50;
+		this.degats = rand.nextInt(10) + 20;
 	}
 
 	@Override
@@ -123,13 +121,15 @@ public class Agent implements Runnable, IDessinable {
 
 	@Override
 	public void paint(Graphics g) {
+		final int tailleBarre = 31;
 		g.setColor(equipe.getCouleur());
 		g.fillOval(position.x - 2, position.y - 2, 5, 5);
 		g.setColor(Color.red);
-		g.fillRect(position.x - 15, position.y - 10, 31, 2);
+		g.fillRect(position.x - 15, position.y - 10, tailleBarre, 2);
 		g.setColor(Color.green);
 		double vie = (double) vieActuelle / (double) vieMax;
-		g.fillRect(position.x - 15, position.y - 10, (int) (31 * vie), 2);
+		g.fillRect(position.x - 15, position.y - 10, (int) (tailleBarre * vie),
+				2);
 	}
 
 	public boolean memeEquipe(Agent agent) {
@@ -147,6 +147,10 @@ public class Agent implements Runnable, IDessinable {
 
 	public int getId() {
 		return id;
+	}
+
+	public int getDegats() {
+		return degats;
 	}
 
 	public void recoitMessage(String message) {

@@ -38,6 +38,9 @@ public class Environnement extends JPanel {
 		this.equipes = new ArrayList<Equipe>();
 
 		Equipe est = new Equipe(TagEquipe.EST, new Point(100, 100));
+		est.addPosDefense(new Point(50, 75));
+		est.addPosDefense(new Point(75, 50));
+
 		Equipe ouest = new Equipe(TagEquipe.OUEST, new Point(200, 200));
 		this.equipes.add(est);
 		this.equipes.add(ouest);
@@ -53,6 +56,7 @@ public class Environnement extends JPanel {
 				Color.darkGray));
 		decors.add(new Mur(new Point(300, 350), new Dimension(50, 100),
 				Color.darkGray));
+		// Agent avec chemin long.
 		// agents.add(new Agent(est, new Point(200, 500), this));
 		agents.add(new Agent(est, new Point(200, 240), this));
 		// agents.add(new Agent(ouest, new Point(300, 100), this));
@@ -95,8 +99,7 @@ public class Environnement extends JPanel {
 	}
 
 	public boolean tirer(Agent source, Agent cible) {
-		// TODO Mettre un nombre de pv en variable.
-		boolean vivant = cible.toucher(100);
+		boolean vivant = cible.toucher(source.getDegats());
 		if (!vivant) {
 			arreteThread(cible);
 		}
@@ -175,6 +178,7 @@ public class Environnement extends JPanel {
 			}
 			currentPoint = new Point(x, y);
 		}
+		chemin.add(destination);
 		return chemin;
 	}
 
@@ -265,16 +269,11 @@ public class Environnement extends JPanel {
 		if ((p == null) || (q == null)) {
 			return 1000000; // valeur improbable
 		}
-		// return Math.abs(p.x - q.x) + Math.abs(p.y - q.y); //faibles calculs,
-		// resultats imprecis
-		return (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y); // calculs
-																		// lourds,
-																		// resultats
-																		// precis
-	}
+		// faibles calculs, resultats imprecis
+		// return Math.abs(p.x - q.x) + Math.abs(p.y - q.y);
 
-	public List<Point> chemin(List<Point> cameFrom, Point destination) {
-		return null;
+		// calculs lourds, resultats precis
+		return (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y);
 	}
 
 	public Agent getAgent(int id) {
