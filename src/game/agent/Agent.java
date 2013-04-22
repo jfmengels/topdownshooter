@@ -21,8 +21,10 @@ public class Agent implements Runnable, IDessinable {
 	private final int vieMax;
 	private int vieActuelle;
 
-	private Point position;
 	private final Mouvement mouvement;
+	private Point position;
+	private double orientation;
+
 	private final double vitesse;
 	private final int portee;
 	private final int degats;
@@ -163,5 +165,13 @@ public class Agent implements Runnable, IDessinable {
 
 	public void init() {
 		this.etat.entre(this, environnement);
+	}
+
+	public double getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(double orientation) {
+		this.orientation = orientation;
 	}
 }

@@ -10,7 +10,6 @@ import java.util.Random;
 
 public class EtatDefense implements Etat {
 
-	private boolean estADestination;
 	private long tempsProchainMouvement;
 	private final Random rand;
 
@@ -35,7 +34,7 @@ public class EtatDefense implements Etat {
 
 			// TODO Print
 			System.out.println("EtatDefense action - Deplacement");
-			
+
 			List<Point> posPossibles = agent.getEquipe().getPosDefense();
 			Point cible = posPossibles.get(rand.nextInt(posPossibles.size()));
 
