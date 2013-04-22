@@ -11,13 +11,16 @@ public class EtatAttaque implements Etat {
 	@Override
 	public void entre(Agent agent, Environnement env) {
 		System.out.println(agent.getId() + "\tAttaque");
-		Point cible = env.autreEquipe(agent.getEquipe()).getPosCible();
-		List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
-		agent.getMouvement().setDestinations(chemin);
+
 	}
 
 	@Override
 	public void action(Agent agent, Environnement env) {
+		if (agent.getMouvement().estArrete()) {
+			Point cible = env.autreEquipe(agent.getEquipe()).getPosCible();
+			List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
+			agent.getMouvement().setDestinations(chemin);
+		}
 		List<Agent> enemisEnVue = env.enemisEnVue(agent);
 		if (!enemisEnVue.isEmpty()) {
 			Agent cible = enemisEnVue.get(0);
