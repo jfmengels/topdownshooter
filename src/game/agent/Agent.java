@@ -30,7 +30,8 @@ public class Agent implements Runnable, IDessinable {
 
 	private Point position;
 	private final Mouvement mouvement;
-	private double vitesse;
+	private final double vitesse;
+	private final int portee;
 
 	private final Environnement environnement;
 	private boolean threadRunning;
@@ -52,6 +53,7 @@ public class Agent implements Runnable, IDessinable {
 		this.vieActuelle = 90;
 		this.position = position;
 		this.vitesse = new Random().nextInt(30) + 50;
+		this.portee = new Random().nextInt(30) + 50;
 	}
 
 	@Override
@@ -149,5 +151,9 @@ public class Agent implements Runnable, IDessinable {
 
 	public void recoitMessage(String message) {
 		this.etat.recoitMessage(this, environnement, message);
+	}
+
+	public int getPortee() {
+		return (int) portee;
 	}
 }

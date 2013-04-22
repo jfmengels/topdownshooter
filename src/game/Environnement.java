@@ -54,9 +54,9 @@ public class Environnement extends JPanel {
 		decors.add(new Mur(new Point(300, 350), new Dimension(50, 100),
 				Color.darkGray));
 		agents.add(new Agent(est, new Point(200, 500), this));
-		//agents.add(new Agent(ouest, new Point(300, 100), this));
+		// agents.add(new Agent(ouest, new Point(300, 100), this));
 		agents.add(new Agent(est, new Point(300, 100), this));
-		agents.add(new Agent(est, new Point(100, 100), this));
+		agents.add(new Agent(est, new Point(100, 150), this));
 	}
 
 	public void start() {
@@ -100,12 +100,9 @@ public class Environnement extends JPanel {
 	}
 
 	public List<Point> cheminVers(Point depart, Point destination) {
-		Point temp = depart;
-		depart = destination;
-		destination = temp;
 		boolean finished = false;
 		Set<Point> aTraiter = new HashSet<>();
-		aTraiter.add(depart);
+		aTraiter.add(destination);
 		int[][] cout = new int[800][600];
 
 		// initialisation tableau
@@ -115,13 +112,12 @@ public class Environnement extends JPanel {
 										// dans l'ecran
 			}
 		}
-		cout[depart.x][depart.y] = 0;
+		cout[destination.x][destination.y] = 0;
 		while (!aTraiter.isEmpty()) {
 			// selection du point a traiter le plus proche de la cible
 			Point minimum = null;
 			for (Point point : aTraiter) {
-				if (distance(point, destination) < distance(minimum,
-						destination)) {
+				if (distance(point, depart) < distance(minimum, depart)) {
 					minimum = point;
 				}
 			}
@@ -146,7 +142,7 @@ public class Environnement extends JPanel {
 			}
 
 			// si on est arrivé, alors on arrete
-			if (minimum.equals(destination)) {
+			if (minimum.equals(depart)) {
 				finished = true;
 				break;
 			}
@@ -157,8 +153,8 @@ public class Environnement extends JPanel {
 
 		// recupération d'un chemin
 		ArrayList<Point> chemin = new ArrayList<>();
-		Point currentPoint = destination;
-		while (!currentPoint.equals(depart)) {
+		Point currentPoint = depart;
+		while (!currentPoint.equals(destination)) {
 			chemin.add(currentPoint);
 			int x = currentPoint.x, y = currentPoint.y;
 			int pixelCost = 1000000;
@@ -183,10 +179,62 @@ public class Environnement extends JPanel {
 	 * @param agent Agent observateur.
 	 * @return List des enemis visibles.
 	 */
-	public List<Agent> enemisEnVue(Agent agent) {
-		// TODO Implement
+	public List<Agent> enemisEnVue(Agent agentSource) {
 		ArrayList<Agent> liste = new ArrayList<>();
+		if (agentSource == null) {
+			return liste;
+		}
+		int distance;
+		int x1, x2, y1, y2;
+		x1 = agentSource.getPosition().x;
+		y1 = agentSource.getPosition().y;
+		for (Agent agent : liste) {
+			if (agentSource.memeEquipe(agent)) {
+				continue;
+			}
+			x2 = agent.getPosition().x;
+			y2 = agent.getPosition().y;
+			distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+			if (distance <= agentSource.getPortee() * agentSource.getPortee()) {
+				// gestion cone de vue
+				// gestions murs
+				if (isVisible(agentSource.getPosition(), agent.getPosition())) {
+					liste.add(agent);
+				}
+			}
+		}
+
 		return liste;
+	}
+
+	private boolean isVisible(Point p, Point q) {
+		if (p.x > q.x) {
+			Point temp = p;
+			p = q;
+			q = temp;
+		}
+
+		double x = p.x;
+		double y = p.y;
+		double pasX, pasY;
+		if (Math.abs(q.x - p.x) > Math.abs(q.y - p.y)) {
+			pasX = 1; // puisque les points sont réordonnés selon leur position
+						// sur l'axe des abcisses
+			pasY = (q.y - p.y) / Math.abs(q.x - p.x);
+		} else {
+			pasX = (q.x - p.x) / Math.abs(q.y - p.y);
+			pasY = (q.y - p.y) / Math.abs(q.y - p.y);
+		}
+
+		while (x <= q.x) {
+			if (!isWalkable((int) x, (int) y)) {
+				return false;
+			}
+			x += pasX;
+			y += pasY;
+		}
+
+		return true;
 	}
 
 	private boolean isWalkable(int x, int y) {
@@ -210,10 +258,15 @@ public class Environnement extends JPanel {
 	}
 
 	private int distance(Point p, Point q) {
-		if (p == null) {
-			return 1000000;
+		if ((p == null) || (q == null)) {
+			return 1000000; // valeur improbable
 		}
-		return Math.abs(p.x - q.x) + Math.abs(p.y - q.y);
+		// return Math.abs(p.x - q.x) + Math.abs(p.y - q.y); //faibles calculs,
+		// resultats imprecis
+		return (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y); // calculs
+																		// lourds,
+																		// resultats
+																		// precis
 	}
 
 	public List<Point> chemin(List<Point> cameFrom, Point destination) {
