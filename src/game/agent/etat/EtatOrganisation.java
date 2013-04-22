@@ -19,27 +19,32 @@ public class EtatOrganisation implements Etat {
 	}
 
 	private int nbAgents;
-	private List<Data> dataList;
-	private EtatAttribution attribution;
+	private final List<Data> dataList;
+	private final EtatAttribution attribution;
+	private boolean demandeFaite;
 
 	public EtatOrganisation() {
 		dataList = new ArrayList<EtatOrganisation.Data>();
 		attribution = new EtatAttribution();
+		demandeFaite = false;
 	}
 
 	@Override
 	public void entre(Agent agent, Environnement env) {
-		agent.getEquipe().ecrireTableau(agent, "demandeData");
-		nbAgents = agent.getEquipe().getAgents().size();
-
-		String message = "dataAgent " + agent.getId() + " "
-				+ ((int) agent.getVitesse());
-		this.recoitMessage(agent, env, message);
+		// Ne rien faire
 	}
 
 	@Override
 	public void action(Agent agent, Environnement env) {
-		// Ne rien faire
+		if (!demandeFaite) {
+			demandeFaite = true;
+			agent.getEquipe().ecrireTableau(agent, "demandeData");
+			nbAgents = agent.getEquipe().getAgents().size();
+
+			String message = "dataAgent " + agent.getId() + " "
+					+ ((int) agent.getVitesse());
+			this.recoitMessage(agent, env, message);
+		}
 	}
 
 	@Override
@@ -55,7 +60,6 @@ public class EtatOrganisation implements Etat {
 				}
 			}
 		} else {
-			System.out.println("Autre");
 			attribution.recoitMessage(agent, env, message);
 		}
 	}

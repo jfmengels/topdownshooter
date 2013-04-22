@@ -52,14 +52,14 @@ public class Agent implements Runnable, IDessinable {
 		this.vieMax = 100;
 		this.vieActuelle = 90;
 		this.position = position;
-		this.vitesse = new Random().nextInt(30) + 50;
-		this.portee = new Random().nextInt(30) + 50;
+		Random rand = new Random();
+		this.vitesse = rand.nextInt(30) + 50;
+		this.portee = rand.nextInt(30) + 50;
 	}
 
 	@Override
 	public void run() {
 		threadRunning = true;
-		this.etat.entre(this, environnement);
 		while (threadRunning) {
 			this.etat.action(this, environnement);
 		}
@@ -155,5 +155,9 @@ public class Agent implements Runnable, IDessinable {
 
 	public int getPortee() {
 		return (int) portee;
+	}
+
+	public void init() {
+		this.etat.entre(this, environnement);
 	}
 }

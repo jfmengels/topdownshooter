@@ -11,21 +11,21 @@ public class EtatAttribution implements Etat {
 	private boolean estOrga;
 	private int compteurMessages;
 	private int nbAgents;
+	private boolean tokenEnvoye;
+	private static final EtatOrganisation organisation = new EtatOrganisation();
 
 	public EtatAttribution() {
 		randomToken = new Random().nextInt();
 		estOrga = true;
 		compteurMessages = 0;
+		tokenEnvoye = false;
 	}
 
 	@Override
 	public void action(Agent agent, Environnement env) {
-		// Ne rien faire.
-		agent.getEquipe().ecrireTableau(agent, "token " + randomToken);
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if (!tokenEnvoye) {
+			tokenEnvoye = true;
+			agent.getEquipe().ecrireTableau(agent, "token " + randomToken);
 		}
 	}
 
@@ -56,8 +56,9 @@ public class EtatAttribution implements Etat {
 			estOrga = false;
 		}
 		synchronized (this) {
-			if (estOrga && ++compteurMessages == nbAgents) {
-				agent.setEtat(new EtatOrganisation());
+			compteurMessages++;
+			if (estOrga && compteurMessages >= nbAgents) {
+				agent.setEtat(organisation);
 			}
 		}
 	}

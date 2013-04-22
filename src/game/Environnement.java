@@ -53,13 +53,17 @@ public class Environnement extends JPanel {
 				Color.darkGray));
 		decors.add(new Mur(new Point(300, 350), new Dimension(50, 100),
 				Color.darkGray));
-		agents.add(new Agent(est, new Point(200, 500), this));
+		// agents.add(new Agent(est, new Point(200, 500), this));
+		agents.add(new Agent(est, new Point(200, 240), this));
 		// agents.add(new Agent(ouest, new Point(300, 100), this));
 		agents.add(new Agent(est, new Point(300, 100), this));
 		agents.add(new Agent(est, new Point(100, 150), this));
 	}
 
 	public void start() {
+		for (Agent agent : this.agents) {
+			agent.init();
+		}
 		for (Agent agent : this.agents) {
 			Thread thread = new Thread(agent);
 			thread.start();
