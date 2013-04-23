@@ -23,16 +23,7 @@ public class Mouvement {
 		tempsDepart = System.currentTimeMillis();
 		posDepart = agent.getPosition();
 		estimeTemps();
-		// TODO Changer orientation
-	}
-
-	public void setDestination(Point dest) {
-		destination.clear();
-		destination.add(dest);
-		tempsDepart = System.currentTimeMillis();
-		posDepart = agent.getPosition();
-		estimeTemps();
-		// TODO Changer orientation
+		agent.setOrientation(destinations.get(0));
 	}
 
 	public boolean estArrete() {
@@ -70,7 +61,8 @@ public class Mouvement {
 			}
 		}
 		if (changeDirection) {
-			// TODO Changer orientation
+			if (destination.size() > 0)
+				agent.setOrientation(destination.get(0));
 		}
 	}
 

@@ -32,8 +32,6 @@ public class Agent implements Runnable, IDessinable {
 	private final Environnement environnement;
 	private boolean threadRunning;
 
-	// TODO Ajouter orientation. Point, angle ?
-
 	public Agent(Equipe equipe, Point position, Environnement env) {
 		synchronized (Agent.class) {
 			this.id = idCount++;
@@ -55,6 +53,7 @@ public class Agent implements Runnable, IDessinable {
 		this.vitesse = rand.nextInt(30) + 50;
 		this.portee = rand.nextInt(30) + 50;
 		this.degats = rand.nextInt(10) + 20;
+		this.orientation = 0;
 	}
 
 	@Override
@@ -124,8 +123,17 @@ public class Agent implements Runnable, IDessinable {
 	@Override
 	public void paint(Graphics g) {
 		final int tailleBarre = 31;
+		double angle;
 		g.setColor(equipe.getCouleur());
 		g.fillOval(position.x - 2, position.y - 2, 5, 5);
+		angle = orientation - Math.PI / 6;
+		g.drawLine(position.x, position.y,
+				(int) (position.x + portee * Math.cos(angle)),
+				(int) (position.y + portee * Math.sin(-angle)));
+		angle = orientation + Math.PI / 6;
+		g.drawLine(position.x, position.y,
+				(int) (position.x + portee * Math.cos(angle)),
+				(int) (position.y + portee * Math.sin(-angle)));
 		g.setColor(Color.red);
 		g.fillRect(position.x - 15, position.y - 10, tailleBarre, 2);
 		g.setColor(Color.green);
@@ -171,8 +179,22 @@ public class Agent implements Runnable, IDessinable {
 		return orientation;
 	}
 
-	public void setOrientation(double orientation) {
-		this.orientation = orientation;
+	public void setOrientation(Point destination) {
+		double hypo;
+		double adja;
+
+		hypo = Math.sqrt((position.x - destination.x)
+				* (position.x - destination.x) + (position.y - destination.y)
+				* (position.y - destination.y));
+		adja = destination.x - position.x;
+		if (hypo != 0) {
+			double cos = adja / hypo;
+			double angle = Math.acos(cos);
+			if (destination.y > position.y) {
+				angle *= -1;
+			}
+			this.orientation = angle;
+		}
 	}
 
 	public void tirer(Agent cible) {

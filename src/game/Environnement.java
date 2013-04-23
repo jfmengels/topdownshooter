@@ -123,7 +123,7 @@ public class Environnement extends JPanel {
 		return !vivant;
 	}
 
-	public List<Point> cheminVers(Point depart, Point destination) {
+public List<Point> cheminVers(Point depart, Point destination) {
 		boolean finished = false;
 		Set<Point> aTraiter = new HashSet<>();
 		aTraiter.add(destination);
@@ -217,7 +217,7 @@ public class Environnement extends JPanel {
 				via = target;
 			}
 		}
-		if (src != null) {
+		if ( src != null) {
 			cheminOpti.add(src);
 		}
 		cheminOpti.add(destination);
@@ -247,11 +247,8 @@ public class Environnement extends JPanel {
 			distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 			if (distance <= agentSource.getPortee() * agentSource.getPortee()) {
 				// gestion cone de vue
-				double angle = (double) ((x1 + Math.cos(agentSource
-						.getOrientation())) * x2 + (y1 + Math.sin(agentSource
-						.getOrientation())) * y2)
-						/ Math.sqrt(distance);
-				if (angle < Math.cos(agentSource.getOrientation())) {
+				double angle = (x2-x1)*Math.cos(agentSource.getOrientation()) + (y2-y1)*Math.sin(-agentSource.getOrientation()) / Math.sqrt(distance);
+				if (angle < Math.cos(Math.PI/6)) {
 					continue;
 				}
 				// gestions murs
@@ -281,7 +278,7 @@ public class Environnement extends JPanel {
 
 	private boolean isWalkable(int x, int y) {
 		int xmin, xmax, ymin, ymax;
-		int tolerance = 5;
+		int tolerance = 3;
 		Mur mur;
 		for (Decor decor : decors) {
 			if (decor.getClass() == Mur.class) {
