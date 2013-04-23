@@ -1,27 +1,27 @@
 package game.agent;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Intermédiaire dans la communication entre agents, permettant de réaliser des
+ * broadcasts.
+ * @author Jeroen Engels et Florent Claisse
+ */
 public class BlackBoard {
 
-	private final List<Agent> agents;
-
-	public BlackBoard() {
-		this.agents = new ArrayList<Agent>();
-	}
-
+	/**
+	 * Ecrit un message sur le tableau, qui sera envoyé à tous les autres
+	 * agents.
+	 * @param agent Agent qui écrit le message.
+	 * @param message Message à écrire.
+	 */
 	public void ecrire(Agent agent, String message) {
+		List<Agent> agents = agent.getEquipe().getAgents();
 		System.out.println(agent.getId() + " envoie\t" + message);
-		for (Agent a : this.agents) {
-			if (a != agent) {
+		for (Agent a : agents) {
+			if (a != agent && a.estEnVie()) {
 				a.recoitMessage(message);
 			}
 		}
 	}
-
-	public void addAgent(Agent agent) {
-		this.agents.add(agent);
-	}
-
 }
