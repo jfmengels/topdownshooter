@@ -5,6 +5,7 @@ import game.agent.etat.Etat;
 import game.agent.etat.EtatAttribution;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.List;
@@ -132,13 +133,13 @@ public class Agent implements Runnable, IDessinable {
 
 	@Override
 	public void paint(Graphics g) {
-		if (!estEnVie()) {
+		if (!estEnVie()) { // Si l'agent est mort
 			g.setColor(equipe.getCouleur());
 			g.drawLine(position.x - 6, position.y - 6, position.x + 6,
 					position.y + 6);
 			g.drawLine(position.x + 6, position.y - 6, position.x - 6,
 					position.y + 6);
-		} else {
+		} else { // S'il est encore en vie.
 			final int tailleBarre = 31;
 			double angle1, angle2;
 			g.setColor(equipe.getCouleur());
@@ -160,6 +161,11 @@ public class Agent implements Runnable, IDessinable {
 			g.fillRect(position.x - 15, position.y - 10,
 					(int) (tailleBarre * vie), 2);
 		}
+
+		// On affiche le numéro de l'agent.
+		g.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 10));
+		g.setColor(Color.black);
+		g.drawString(getId() + "", position.x + 5, position.y + 3);
 	}
 
 	public boolean memeEquipe(Agent agent) {
