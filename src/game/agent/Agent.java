@@ -13,44 +13,82 @@ import java.util.Random;
 
 import display.IDessinable;
 
+/**
+ * Représentation d'un agent.
+ * @author Jeroen Engels et Florent Claisse
+ */
 public class Agent implements Runnable, IDessinable {
 
+	/**
+	 * Informations sur l'agent et son environnement.
+	 * @var idCount: Permet d'attribuer un identifiant différent à chaque agent.
+	 * @var id: Identifiant de l'agent.
+	 * @var equipe: Equipe à laquelle l'agent appartient.
+	 * @var environnement: Environnement dans lequel l'agent évolue.
+	 * @var etat: Etat dans lequel l'agent se trouve, et qui va dicter son
+	 *      comportement.
+	 */
 	private static int idCount;
 	private final int id;
 	private final Equipe equipe;
+	private final Environnement environnement;
 	private Etat etat;
 
+	/**
+	 * Attributs / capacités de l'agent
+	 * @var vieMax: Points de vie que possède l'agent s'il a tous ses points de
+	 *      vie.
+	 * @var vieActuelle: Points de vie qu'il a en ce moment.
+	 * @var vitesse: Vitesse de déplacement, en pixels par seconde.
+	 * @var portee: Distance à laquelle il voit, en pixels.
+	 * @var degats: Nombre de points de vie qu'il enlève lorsqu'il touche une
+	 *      cible.
+	 */
 	private final int vieMax;
 	private int vieActuelle;
-
-	private final Mouvement mouvement;
-	private Point position;
-	private double orientation;
-
 	private final double vitesse;
 	private final int portee;
 	private final int degats;
 
-	private final Environnement environnement;
+	/**
+	 * Informations sur la position et l'orientation de l'agent.
+	 * @var mouvement: Va gérer le déplacement (et le réorientation automatique)
+	 *      de l'agent.
+	 * @var position: Position actuelle de l'agent, de la forme (x,y), en
+	 *      pixels.
+	 * @var orientation: Où est-ce que l'agent regarde, en radians.
+	 */
+	private final Mouvement mouvement;
+	private Point position;
+	private double orientation;
+
+	/**
+	 * Données liés à l'exécution du thread.
+	 * @var threadRunning: true si le thread tourne, false s'il doit s'arrêter.
+	 */
 	private boolean threadRunning;
 
 	public static final int VIEMAX = 30;
 	public static final int VIEMIN = 29;
-	public static final int VITESSEMAX = 30;
-	public static final int VITESSEMIN = 20;
+	public static final int VITESSEMAX = 40;
+	public static final int VITESSEMIN = 30;
 	public static final int PORTEEMAX = 101;
 	public static final int PORTEEMIN = 100;
 	public static final int DEGATSMAX = 31;
 	public static final int DEGATSMIN = 30;
 	public static final double ANGLE = Math.PI / 4;
 
+	/**
+	 * Créé un nouvel agent.
+	 * @param equipe Equipe auquel l'agent appartient.
+	 * @param position Position de départ de l'agent.
+	 * @param env Environnement dans lequel l'agent va évoluer.
+	 */
 	public Agent(Equipe equipe, Point position, Environnement env) {
 		synchronized (Agent.class) {
+			// Attribution d'un identifiant.
 			this.id = idCount++;
 		}
-
-		Random rand = new Random();
-
 		this.equipe = equipe;
 		this.position = position;
 		this.environnement = env;
@@ -58,8 +96,13 @@ public class Agent implements Runnable, IDessinable {
 		equipe.addAgent(this);
 
 		this.mouvement = new Mouvement(this);
+
+		// L"agent commence dans l'état attribution, qui a pour but de
+		// déterminer son futur rôle.
 		this.etat = new EtatAttribution();
 
+		// Détermination aléatoire des valeurs des attributs.
+		Random rand = new Random();
 		this.vieMax = rand.nextInt(VIEMAX - VIEMIN) + VIEMIN;
 		this.vieActuelle = this.vieMax;
 		this.vitesse = rand.nextInt(VITESSEMAX - VITESSEMIN) + VITESSEMIN;
@@ -71,7 +114,7 @@ public class Agent implements Runnable, IDessinable {
 	@Override
 	public void run() {
 		threadRunning = true;
-		while (threadRunning) {
+		while (threadRunning) { // Si on peut toujours
 			this.etat.action(this, environnement);
 		}
 	}

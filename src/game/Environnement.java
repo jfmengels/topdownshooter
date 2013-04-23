@@ -17,14 +17,29 @@ import java.util.Set;
 
 import javax.swing.JPanel;
 
+/**
+ * Environnement dans lequel évolue des agents.
+ * @author Jeroen Engels et Florent Claisse
+ */
 public class Environnement extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Données de l'environnement.
+	 * @var agents: Les agents présents dans l'environnement.
+	 * @var decors: Les décors (murs, cibles...) de l'environnement.
+	 * @var equipes: Les différentes équipes présentes.
+	 * @var vainqueur: L'équipe gagnante si le jeu est fini, null sinon.
+	 */
 	private final List<Agent> agents;
 	private final List<Decor> decors;
 	private final List<Equipe> equipes;
 	private Equipe vainqueur;
 
+	/**
+	 * Créé un nouvel environnement.
+	 */
 	public Environnement() {
 		this.setBackground(Color.white);
 		this.agents = new ArrayList<Agent>();
@@ -64,6 +79,9 @@ public class Environnement extends JPanel {
 		agents.add(new Agent(ouest, new Point(510, 410), this));
 	}
 
+	/**
+	 * Créé des décors.
+	 */
 	private void createWalls() {
 		// delimitation walls
 		decors.add(new Mur(new Point(0, 0), new Dimension(800, 10), Color.black));
@@ -90,44 +108,78 @@ public class Environnement extends JPanel {
 
 	}
 
+	/**
+	 * Commence l'exécution de l'environnement.
+	 */
 	public void start() {
+		// On initialise les agents pour les informations qui ne peuvent pas
+		// être données lors de leur création et qui doivent être prêtes lors de
+		// l'exécution du thread.
 		for (Agent agent : this.agents) {
 			agent.init();
 		}
+
+		// On commence les threads.
 		for (Agent agent : this.agents) {
-			Thread thread = new Thread(agent);
-			thread.start();
+			new Thread(agent).start();
 		}
 	}
 
 	/**
-	 * Arrete proprement un thread attribué à agent.
-	 * @param agent Agent à arreter.
+	 * Arrête proprement un thread attribué à agent.
+	 * @param agent Agent à arrêter.
 	 */
 	public void arreteThread(Agent agent) {
 		agent.terminate();
 	}
 
+	/**
+	 * Retourne les agents de l'environnement.
+	 * @return Liste d'Agent
+	 */
 	public List<Agent> getAgents() {
 		return agents;
 	}
 
+	/**
+	 * Retourne la liste des décors de l'environnement (murs, cibles...)
+	 * @return List de Decor.
+	 */
 	public List<Decor> getDecors() {
 		return decors;
 	}
 
+	/**
+	 * Retourne l'équipe opposée.
+	 * @param equipe Tag de l'équipe dont on veut connaître l'adversaire.
+	 * @return Equipe
+	 */
 	public Equipe autreEquipe(TagEquipe equipe) {
 		return equipe == TagEquipe.EST ? equipes.get(1) : equipes.get(0);
 	}
 
+	/**
+	 * Retourne l'équipe opposée.
+	 * @param equipe Équipe dont on veut connaître l'adversaire.
+	 * @return Equipe
+	 */
 	public Equipe autreEquipe(Equipe equipe) {
 		return equipe == equipes.get(0) ? equipes.get(1) : equipes.get(0);
 	}
 
+	/**
+	 * Tire sur un agent.
+	 * @param source Agent tireur.
+	 * @param cible Agent ciblé.
+	 * @return true si la cible est tuée, false sinon.
+	 */
 	public boolean tirer(Agent source, Agent cible) {
+		// On lui inflige des dégats.
 		boolean vivant = cible.toucher(source.getDegats());
+		// Si l'agent est mort, on arrête l'exécution de son thread.
 		if (!vivant) {
 			arreteThread(cible);
+			// Si tous les agents de l'équipe sont morts, on arrête la partie.
 			if (cible.getEquipe().getNbAgentsVivants() == 0) {
 				this.end(source.getEquipe());
 			}
@@ -135,6 +187,12 @@ public class Environnement extends JPanel {
 		return !vivant;
 	}
 
+	/**
+	 * Retourne le chemin que doit prendre un agent entre deux points.
+	 * @param depart Point de départ.
+	 * @param destination Point de destination.
+	 * @return List de points intermédiaires.
+	 */
 	public List<Point> cheminVers(Point depart, Point destination) {
 		boolean finished = false;
 		Set<Point> aTraiter = new HashSet<>();
@@ -312,8 +370,14 @@ public class Environnement extends JPanel {
 		return true;
 	}
 
+	/**
+	 * Indique la distance entre deux points.
+	 * @param p Premier point.
+	 * @param q Deuxième point.
+	 * @return Le carré de la distance entre p et q.
+	 */
 	private int distance(Point p, Point q) {
-		if ((p == null) || (q == null)) {
+		if (p == null || q == null) {
 			return 1000000; // valeur improbable
 		}
 		// faibles calculs, resultats imprecis
@@ -323,6 +387,11 @@ public class Environnement extends JPanel {
 		return (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y);
 	}
 
+	/**
+	 * Retourne l'agent correspondant à l'identifiant..
+	 * @param id Identifiant de l'agent recherché.
+	 * @return L'agent avec l'id correspondant, null si aucun n'est trouvé.
+	 */
 	public Agent getAgent(int id) {
 		for (Agent agent : this.agents) {
 			if (agent.getId() == id) {
@@ -337,12 +406,18 @@ public class Environnement extends JPanel {
 	 * @param equipe Equipe gagnante.
 	 */
 	public void end(Equipe equipe) {
+		// On déclare le vainqueur
 		vainqueur = equipe;
+		// On arrêter tous les threads.
 		for (Agent agent : this.agents) {
 			agent.terminate();
 		}
 	}
 
+	/**
+	 * Indique l'équipe gagnante.
+	 * @return Le vainqueur si la partie est finie, null sinon.
+	 */
 	public Equipe getVainqueur() {
 		return vainqueur;
 	}
