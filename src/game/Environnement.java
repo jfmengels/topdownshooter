@@ -13,6 +13,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import javax.swing.JPanel;
@@ -36,6 +37,8 @@ public class Environnement extends JPanel {
 	private final List<Decor> decors;
 	private final List<Equipe> equipes;
 	private Equipe vainqueur;
+	private final int TAILLE_EQUIPE = 5;
+	private final int ZONE_GEN_AGENT = 80;
 
 	/**
 	 * Créé un nouvel environnement.
@@ -68,15 +71,18 @@ public class Environnement extends JPanel {
 		}
 		createWalls();
 
-		// Ajout d'agents dans l'équipe est
-		agents.add(new Agent(est, new Point(150, 240), this));
-		agents.add(new Agent(est, new Point(300, 100), this));
-		agents.add(new Agent(est, new Point(300, 150), this));
-
-		// Ajout d'agents dans l'équipe ouest.
-		agents.add(new Agent(ouest, new Point(460, 460), this));
-		agents.add(new Agent(ouest, new Point(410, 510), this));
-		agents.add(new Agent(ouest, new Point(510, 410), this));
+		// Création d'agents
+		Random rand = new Random();
+		for (Equipe equipe : equipes) {
+			Point cible = equipe.getPosCible();
+			for (int i = 0; i < TAILLE_EQUIPE; i++) {
+				int x = cible.x + rand.nextInt(ZONE_GEN_AGENT)
+						- (ZONE_GEN_AGENT / 2);
+				int y = cible.y + rand.nextInt(ZONE_GEN_AGENT)
+						- (ZONE_GEN_AGENT / 2);
+				agents.add(new Agent(equipe, new Point(x, y), this));
+			}
+		}
 	}
 
 	/**

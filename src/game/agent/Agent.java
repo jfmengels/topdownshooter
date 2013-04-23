@@ -72,7 +72,7 @@ public class Agent implements Runnable, IDessinable {
 	public static final int VIEMIN = 29;
 	public static final int VITESSEMAX = 40;
 	public static final int VITESSEMIN = 30;
-	public static final int PORTEEMAX = 101;
+	public static final int PORTEEMAX = 150;
 	public static final int PORTEEMIN = 100;
 	public static final int DEGATSMAX = 31;
 	public static final int DEGATSMIN = 30;
