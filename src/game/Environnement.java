@@ -252,9 +252,9 @@ public class Environnement extends JPanel {
 			distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 			if (distance <= agentSource.getPortee() * agentSource.getPortee()) {
 				// gestion cone de vue
-				double angle = (x2 - x1)
+				double angle = ((x2 - x1)
 						* Math.cos(agentSource.getOrientation()) + (y2 - y1)
-						* Math.sin(-agentSource.getOrientation())
+						* Math.sin(-agentSource.getOrientation()))
 						/ Math.sqrt(distance);
 				if (angle < Math.cos(Math.PI / 6)) {
 					continue;

@@ -39,7 +39,7 @@ public class EtatAttribution implements Etat {
 		} else if (message.startsWith("setEtat")) {
 			interpreteEtat(agent, message);
 		} else if (message.startsWith("demandeData")) {
-			donneDonnees(agent, message);
+			envoieDonnees(agent, message);
 		}
 		// Ignore le reste.
 	}
@@ -64,18 +64,18 @@ public class EtatAttribution implements Etat {
 
 	/**
 	 * Lis un message pour changer l'état de l'agent.
-	 * @param agent
-	 * @param message
+	 * @param agent Agent dont il faut changer l'état.
+	 * @param message Message décrivant le nouvel état.
 	 */
 	private void interpreteEtat(Agent agent, String message) {
 		// Lis le message de la forme :
 		// setEtat idAgent nouvelEtat
 		// Si idAgent correspond à l'id de l'agent, alors il change son état
 		// vers nouvelEtat.
-		String idStr = message.split(" ")[1];
+		String idStr = message.split(" ")[1]; // id de l'agent
 		int id = Integer.parseInt(idStr);
 		if (id == agent.getId()) {
-			String etat = message.split(" ")[2];
+			String etat = message.split(" ")[2]; // nouvel etat
 			if (etat.equals("attaque")) {
 				agent.setEtat(new EtatAttaque());
 			} else if (etat.equals("defense")) {
@@ -84,9 +84,19 @@ public class EtatAttribution implements Etat {
 		}
 	}
 
-	private void donneDonnees(Agent agent, String message) {
+	
+	/**
+	 * Envoie des données qui concernent l'agent, à destination de l'agent organisateur.
+	 * @param agent
+	 * @param message
+	 */
+	private void envoieDonnees(Agent agent, String message) {
 		int vitesse = (int) agent.getVitesse();
-		String str = "dataAgent " + agent.getId() + " " + vitesse;
+		int portee = agent.getPortee();
+		int degats = agent.getDegats();
+		int vieMax = agent.getVieMax();
+		String str = "dataAgent " + agent.getId() + " " + vitesse + " "
+				+ portee + " " + degats + " " + vieMax;
 		agent.getEquipe().ecrireTableau(agent, str);
 	}
 }

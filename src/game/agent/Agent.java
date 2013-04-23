@@ -33,6 +33,15 @@ public class Agent implements Runnable, IDessinable {
 	private final Environnement environnement;
 	private boolean threadRunning;
 
+	public static final int VIEMAX = 100;
+	public static final int VIEMIN = 80;
+	public static final int VITESSEMAX = 80;
+	public static final int VITESSEMIN = 50;
+	public static final int PORTEEMAX = 80;
+	public static final int PORTEEMIN = 50;
+	public static final int DEGATSMAX = 30;
+	public static final int DEGATSMIN = 20;
+
 	public Agent(Equipe equipe, Point position, Environnement env) {
 		synchronized (Agent.class) {
 			this.id = idCount++;
@@ -49,11 +58,11 @@ public class Agent implements Runnable, IDessinable {
 		this.mouvement = new Mouvement(this);
 		this.etat = new EtatAttribution();
 
-		this.vieMax = rand.nextInt(20) + 80;
+		this.vieMax = rand.nextInt(VIEMAX - VIEMIN) + VIEMIN;
 		this.vieActuelle = this.vieMax;
-		this.vitesse = rand.nextInt(30) + 50;
-		this.portee = rand.nextInt(30) + 50;
-		this.degats = rand.nextInt(10) + 20;
+		this.vitesse = rand.nextInt(VITESSEMAX - VITESSEMIN) + VITESSEMIN;
+		this.portee = rand.nextInt(PORTEEMAX - PORTEEMIN) + PORTEEMIN;
+		this.degats = rand.nextInt(DEGATSMAX - DEGATSMIN) + DEGATSMIN;
 		this.orientation = 0;
 	}
 
