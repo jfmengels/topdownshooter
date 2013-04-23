@@ -121,6 +121,9 @@ public class Environnement extends JPanel {
 		boolean vivant = cible.toucher(source.getDegats());
 		if (!vivant) {
 			arreteThread(cible);
+			if (cible.getEquipe().getNbAgentsVivants() == 0) {
+				this.end(source.getEquipe());
+			}
 		}
 		return !vivant;
 	}

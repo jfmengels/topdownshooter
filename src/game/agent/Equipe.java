@@ -78,6 +78,16 @@ public class Equipe {
 		}
 	}
 
+	public int getNbAgentsVivants() {
+		int count = 0;
+		for (Agent agent : this.agents) {
+			if (agent.estEnVie()) {
+				count++;
+			}
+		}
+		return count;
+	}
+
 	/**
 	 * Notifie de la fin du jeu.
 	 * @param env Environnement de la simulation.
