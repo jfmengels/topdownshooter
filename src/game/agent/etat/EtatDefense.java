@@ -15,46 +15,50 @@ public class EtatDefense implements Etat {
 
 	public EtatDefense() {
 		rand = new Random();
+		tempsProchainMouvement = 0;
 	}
 
 	@Override
 	public void entre(Agent agent, Environnement env) {
 		// Ne rien faire.
 		System.out.println(agent.getId() + "\tDefense");
-		tempsProchainMouvement = 0;
 	}
 
 	@Override
 	public void action(Agent agent, Environnement env) {
-		// TODO Regarder si personne en vue.
-		Mouvement mouv = agent.getMouvement();
-		if (mouv.estArrete()
-				&& System.currentTimeMillis() >= tempsProchainMouvement) {
-			// S'il faut définir une nouvelle position de campement, on choisit
-			// une des positions prédéterminées au hasard
+		// On regarde si on a des ennemis en vue.
+		boolean ennemi = agent.voitEnnemi(); // Si oui, il va lui tirer dessus.
+		if (!ennemi) {
+			// Sinon, on le déplace normalement.
+			Mouvement mouv = agent.getMouvement();
+			if (mouv.estArrete()
+					&& System.currentTimeMillis() >= tempsProchainMouvement) {
+				// S'il faut définir une nouvelle position de campement, on
+				// choisit
+				// une des positions prédéterminées au hasard
 
-			List<Point> posPossibles = agent.getEquipe().getPosDefense();
-			Point cible = posPossibles.get(rand.nextInt(posPossibles.size()));
+				List<Point> posPossibles = agent.getEquipe().getPosDefense();
+				Point cible = posPossibles
+						.get(rand.nextInt(posPossibles.size()));
 
-			// Et on dit à l'agent d'y aller.
-			List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
-			mouv.setDestinations(chemin);
-		} else if (!mouv.estArrete()) {
-			// Continuer le mouvement
-			mouv.bouger();
-			if (mouv.estArrete()) {
-				// Si on finit le mouvement, on définit combien de temps on
-				// reste à cette position.
-				tempsProchainMouvement = System.currentTimeMillis()
-						+ (rand.nextInt(4) + 1) * 500;
+				// Et on dit à l'agent d'y aller.
+				List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
+				mouv.setDestinations(chemin);
+			} else if (!mouv.estArrete()) {
+				// Continuer le mouvement
+				mouv.bouger();
+				if (mouv.estArrete()) {
+					// Si on finit le mouvement, on définit combien de temps on
+					// reste à cette position.
+					tempsProchainMouvement = System.currentTimeMillis()
+							+ (rand.nextInt(4) + 1) * 500;
+				}
 			}
 		}
 	}
 
 	@Override
 	public void recoitMessage(Agent agent, Environnement env, String message) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

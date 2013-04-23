@@ -1,5 +1,6 @@
 package game.agent;
 
+import game.Environnement;
 import game.agent.etat.EtatOrganisation;
 
 import java.awt.Color;
@@ -67,5 +68,21 @@ public class Equipe {
 
 	public EtatOrganisation getOrganisation() {
 		return organisation;
+	}
+
+	public String getNom() {
+		if (this.tag == TagEquipe.EST) {
+			return "Est";
+		} else {
+			return "Ouest";
+		}
+	}
+
+	/**
+	 * Notifie de la fin du jeu.
+	 * @param env Environnement de la simulation.
+	 */
+	public void end(Environnement env) {
+		env.end(this);
 	}
 }

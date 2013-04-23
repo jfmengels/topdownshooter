@@ -21,19 +21,23 @@ public class EtatAttaque implements Etat {
 			List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
 			agent.getMouvement().setDestinations(chemin);
 		}
-		List<Agent> ennemisEnVue = env.ennemisEnVue(agent);
-		if (!ennemisEnVue.isEmpty()) {
-			Agent cible = ennemisEnVue.get(0);
-			agent.tirer(cible);
-		} else {
+		// On regarde si on a des ennemis en vue.
+		boolean ennemi = agent.voitEnnemi(); // Si oui, il va lui tirer dessus.
+		if (!ennemi) {
+			// Sinon, on le déplace normalement.
 			agent.getMouvement().bouger();
+
+			// On regarde s'il a atteint la cible.
+			Point cible = env.autreEquipe(agent.getEquipe()).getPosCible();
+
+			if (agent.getPosition().equals(cible)) {
+				agent.getEquipe().end(env);
+			}
 		}
 	}
 
 	@Override
 	public void recoitMessage(Agent agent, Environnement env, String message) {
-		// TODO Auto-generated method stub
 
 	}
-
 }

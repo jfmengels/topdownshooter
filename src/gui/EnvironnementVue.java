@@ -24,8 +24,13 @@ public class EnvironnementVue extends JPanel {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		// TODO Dessiner des cadavres (animation ?)
 		super.paintComponent(g);
+
+		if (env.getVainqueur() != null) {
+			String messageVainqueur = env.getVainqueur().getNom();
+			// TODO Remplacer par un affichage sur l'interface.
+			System.out.println(messageVainqueur);
+		}
 		for (Decor decor : env.getDecors()) {
 			decor.paint(g);
 		}

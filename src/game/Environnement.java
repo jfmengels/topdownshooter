@@ -23,12 +23,14 @@ public class Environnement extends JPanel {
 	private final List<Agent> agents;
 	private final List<Decor> decors;
 	private final List<Equipe> equipes;
+	private Equipe vainqueur;
 
 	public Environnement() {
 		this.setBackground(Color.white);
 		this.agents = new ArrayList<Agent>();
 		this.decors = new ArrayList<Decor>();
 		this.equipes = new ArrayList<Equipe>();
+		this.vainqueur = null;
 
 		Equipe est = new Equipe(TagEquipe.EST, new Point(100, 100));
 		Equipe ouest = new Equipe(TagEquipe.OUEST, new Point(675, 450));
@@ -318,5 +320,20 @@ public class Environnement extends JPanel {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Déclare un vainqueur et arrête la simulation.
+	 * @param equipe Equipe gagnante.
+	 */
+	public void end(Equipe equipe) {
+		vainqueur = equipe;
+		for (Agent agent : this.agents) {
+			agent.terminate();
+		}
+	}
+
+	public Equipe getVainqueur() {
+		return vainqueur;
 	}
 }

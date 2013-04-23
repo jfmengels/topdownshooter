@@ -7,6 +7,7 @@ import game.agent.etat.EtatAttribution;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.List;
 import java.util.Random;
 
 import display.IDessinable;
@@ -122,24 +123,34 @@ public class Agent implements Runnable, IDessinable {
 
 	@Override
 	public void paint(Graphics g) {
-		final int tailleBarre = 31;
-		double angle;
-		g.setColor(equipe.getCouleur());
-		g.fillOval(position.x - 2, position.y - 2, 5, 5);
-		angle = orientation - Math.PI / 6;
-		g.drawLine(position.x, position.y,
-				(int) (position.x + portee * Math.cos(angle)),
-				(int) (position.y + portee * Math.sin(-angle)));
-		angle = orientation + Math.PI / 6;
-		g.drawLine(position.x, position.y,
-				(int) (position.x + portee * Math.cos(angle)),
-				(int) (position.y + portee * Math.sin(-angle)));
-		g.setColor(Color.red);
-		g.fillRect(position.x - 15, position.y - 10, tailleBarre, 2);
-		g.setColor(Color.green);
-		double vie = (double) vieActuelle / (double) vieMax;
-		g.fillRect(position.x - 15, position.y - 10, (int) (tailleBarre * vie),
-				2);
+		if (!estEnVie()) {
+			g.setColor(equipe.getCouleur());
+			g.drawLine(position.x - 6, position.y - 6, position.x + 6,
+					position.y + 6);
+			g.drawLine(position.x + 6, position.y - 6, position.x - 6,
+					position.y + 6);
+		} else {
+			final int tailleBarre = 31;
+			double angle1, angle2;
+			g.setColor(equipe.getCouleur());
+			g.fillOval(position.x - 2, position.y - 2, 5, 5);
+			angle1 = orientation - Math.PI / 6;
+			g.drawLine(position.x, position.y, (int) (position.x + portee
+					* Math.cos(angle1)),
+					(int) (position.y + portee * Math.sin(-angle1)));
+			angle2 = orientation + Math.PI / 6;
+			g.drawLine(position.x, position.y, (int) (position.x + portee
+					* Math.cos(angle2)),
+					(int) (position.y + portee * Math.sin(-angle2)));
+			g.drawArc(position.x - portee, position.y - portee, portee * 2,
+					portee * 2, (int) (angle1 * 180 / Math.PI), 60);
+			g.setColor(Color.red);
+			g.fillRect(position.x - 15, position.y - 10, tailleBarre, 2);
+			g.setColor(Color.green);
+			double vie = (double) vieActuelle / (double) vieMax;
+			g.fillRect(position.x - 15, position.y - 10,
+					(int) (tailleBarre * vie), 2);
+		}
 	}
 
 	public boolean memeEquipe(Agent agent) {
@@ -195,6 +206,16 @@ public class Agent implements Runnable, IDessinable {
 			}
 			this.orientation = angle;
 		}
+	}
+
+	public boolean voitEnnemi() {
+		List<Agent> ennemisEnVue = environnement.ennemisEnVue(this);
+		boolean ennemi = !ennemisEnVue.isEmpty();
+		if (ennemi) {
+			Agent cible = ennemisEnVue.get(0);
+			this.tirer(cible);
+		}
+		return ennemi;
 	}
 
 	public void tirer(Agent cible) {
