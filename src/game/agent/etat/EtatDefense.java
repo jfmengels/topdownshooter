@@ -30,20 +30,20 @@ public class EtatDefense implements Etat {
 		Mouvement mouv = agent.getMouvement();
 		if (mouv.estArrete()
 				&& System.currentTimeMillis() >= tempsProchainMouvement) {
-			// S'il faut définir une nouvelle position de campement
-
-			// TODO Print
-			System.out.println("EtatDefense action - Deplacement");
-
+			// S'il faut définir une nouvelle position de campement, on choisit
+			// une des positions prédéterminées au hasard
 			List<Point> posPossibles = agent.getEquipe().getPosDefense();
 			Point cible = posPossibles.get(rand.nextInt(posPossibles.size()));
+
+			// Et on dit à l'agent d'y aller.
 			List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
 			mouv.setDestinations(chemin);
 		} else if (!mouv.estArrete()) {
 			// Continuer le mouvement
-
 			mouv.bouger();
 			if (mouv.estArrete()) {
+				// Si on finit le mouvement, on définit combien de temps on
+				// reste à cette position.
 				tempsProchainMouvement = System.currentTimeMillis()
 						+ (rand.nextInt(4) + 1) * 500;
 			}

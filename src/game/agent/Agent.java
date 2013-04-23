@@ -174,4 +174,22 @@ public class Agent implements Runnable, IDessinable {
 	public void setOrientation(double orientation) {
 		this.orientation = orientation;
 	}
+
+	public void tirer(Agent cible) {
+		// Si un enemi est en vue, on va le viser et lui tirer dessus.
+		// On attend un moment pour viser et tirer.
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		// Est-ce que l'enemi est toujours en vue ?
+		if (environnement.enemisEnVue(this).contains(cible)) {
+			boolean mort = environnement.tirer(this, cible);
+			if (mort) {
+				// Si on a tué l'enemi, on notifie les alliés.
+
+			}
+		}
+	}
 }
