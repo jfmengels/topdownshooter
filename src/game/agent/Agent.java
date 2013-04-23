@@ -34,14 +34,15 @@ public class Agent implements Runnable, IDessinable {
 	private final Environnement environnement;
 	private boolean threadRunning;
 
-	public static final int VIEMAX = 100;
-	public static final int VIEMIN = 80;
-	public static final int VITESSEMAX = 80;
-	public static final int VITESSEMIN = 50;
-	public static final int PORTEEMAX = 80;
-	public static final int PORTEEMIN = 50;
-	public static final int DEGATSMAX = 30;
-	public static final int DEGATSMIN = 20;
+	public static final int VIEMAX = 30;
+	public static final int VIEMIN = 29;
+	public static final int VITESSEMAX = 30;
+	public static final int VITESSEMIN = 20;
+	public static final int PORTEEMAX = 101;
+	public static final int PORTEEMIN = 100;
+	public static final int DEGATSMAX = 31;
+	public static final int DEGATSMIN = 30;
+	public static final double ANGLE = Math.PI / 4;
 
 	public Agent(Equipe equipe, Point position, Environnement env) {
 		synchronized (Agent.class) {
@@ -133,27 +134,27 @@ public class Agent implements Runnable, IDessinable {
 
 	@Override
 	public void paint(Graphics g) {
-		if (!estEnVie()) { // Si l'agent est mort
+		if (!estEnVie()) {
 			g.setColor(equipe.getCouleur());
 			g.drawLine(position.x - 6, position.y - 6, position.x + 6,
 					position.y + 6);
 			g.drawLine(position.x + 6, position.y - 6, position.x - 6,
 					position.y + 6);
-		} else { // S'il est encore en vie.
+		} else {
 			final int tailleBarre = 31;
 			double angle1, angle2;
 			g.setColor(equipe.getCouleur());
 			g.fillOval(position.x - 2, position.y - 2, 5, 5);
-			angle1 = orientation - Math.PI / 6;
+			angle1 = orientation - ANGLE;
 			g.drawLine(position.x, position.y, (int) (position.x + portee
 					* Math.cos(angle1)),
 					(int) (position.y + portee * Math.sin(-angle1)));
-			angle2 = orientation + Math.PI / 6;
+			angle2 = orientation + ANGLE;
 			g.drawLine(position.x, position.y, (int) (position.x + portee
 					* Math.cos(angle2)),
 					(int) (position.y + portee * Math.sin(-angle2)));
 			g.drawArc(position.x - portee, position.y - portee, portee * 2,
-					portee * 2, (int) (angle1 * 180 / Math.PI), 60);
+					portee * 2, (int) (angle1 * 180 / Math.PI), 90);
 			g.setColor(Color.red);
 			g.fillRect(position.x - 15, position.y - 10, tailleBarre, 2);
 			g.setColor(Color.green);
@@ -161,11 +162,9 @@ public class Agent implements Runnable, IDessinable {
 			g.fillRect(position.x - 15, position.y - 10,
 					(int) (tailleBarre * vie), 2);
 		}
-
-		// On affiche le numéro de l'agent.
 		g.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 10));
 		g.setColor(Color.black);
-		g.drawString(getId() + "", position.x + 5, position.y + 3);
+		g.drawString(getId() + "", position.x + 3, position.y + 3);
 	}
 
 	public boolean memeEquipe(Agent agent) {
@@ -246,7 +245,8 @@ public class Agent implements Runnable, IDessinable {
 			boolean mort = environnement.tirer(this, cible);
 			if (mort) {
 				// Si on a tué l'ennemi, on notifie les alliés.
-
+				String message = "kill " + cible.getId();
+				this.getEquipe().ecrireTableau(this, message);
 			}
 		}
 	}

@@ -34,10 +34,17 @@ public class Environnement extends JPanel {
 
 		Equipe est = new Equipe(TagEquipe.EST, new Point(100, 100));
 		Equipe ouest = new Equipe(TagEquipe.OUEST, new Point(675, 450));
-		est.addPosDefense(new Point(50, 75));
-		est.addPosDefense(new Point(75, 50));
-		ouest.addPosDefense(new Point(620, 475));
-		ouest.addPosDefense(new Point(600, 450));
+
+		est.addPosDefense(new Point(70, 190));
+		est.addPosDefense(new Point(140, 190));
+		est.addPosDefense(new Point(190, 140));
+		est.addPosDefense(new Point(190, 70));
+
+		ouest.addPosDefense(new Point(600, 420));
+		ouest.addPosDefense(new Point(600, 490));
+		ouest.addPosDefense(new Point(630, 410));
+		ouest.addPosDefense(new Point(700, 410));
+
 		this.equipes.add(est);
 		this.equipes.add(ouest);
 
@@ -48,8 +55,8 @@ public class Environnement extends JPanel {
 
 		// Ajout d'agents dans l'équipe est
 		agents.add(new Agent(est, new Point(150, 240), this));
-		agents.add(new Agent(est, new Point(600, 100), this));
-		agents.add(new Agent(est, new Point(600, 150), this));
+		agents.add(new Agent(est, new Point(300, 100), this));
+		agents.add(new Agent(est, new Point(300, 150), this));
 
 		// Ajout d'agents dans l'équipe ouest.
 		agents.add(new Agent(ouest, new Point(460, 460), this));
@@ -256,7 +263,7 @@ public class Environnement extends JPanel {
 						* Math.cos(agentSource.getOrientation()) + (y2 - y1)
 						* Math.sin(-agentSource.getOrientation()))
 						/ Math.sqrt(distance);
-				if (angle < Math.cos(Math.PI / 6)) {
+				if (angle < Math.cos(Agent.ANGLE)) {
 					continue;
 				}
 				// gestions murs
@@ -272,10 +279,10 @@ public class Environnement extends JPanel {
 	private boolean isVisible(Point p, Point q) {
 		double x, dx = q.x - p.x;
 		double y, dy = q.y - p.y;
-
-		for (int i = 0; i < 800; i++) {
-			x = p.x + i * dx / 800;
-			y = p.y + i * dy / 800;
+		int pas = 200;
+		for (int i = 0; i < pas; i++) {
+			x = p.x + i * dx / pas;
+			y = p.y + i * dy / pas;
 			if (!isWalkable((int) x, (int) y)) {
 				return false;
 			}
