@@ -30,16 +30,9 @@ public class EtatDefense implements Etat {
 		Mouvement mouv = agent.getMouvement();
 		if (mouv.estArrete()
 				&& System.currentTimeMillis() >= tempsProchainMouvement) {
-<<<<<<< HEAD
 			// S'il faut définir une nouvelle position de campement, on choisit
 			// une des positions prédéterminées au hasard
-=======
-			// S'il faut définir une nouvelle position de campement
 
-			// TODO Print
-			System.out.println("EtatDefense action - Deplacement");
-
->>>>>>> 1ed27d57665274a96ec4c9cd7f352da7f848532e
 			List<Point> posPossibles = agent.getEquipe().getPosDefense();
 			Point cible = posPossibles.get(rand.nextInt(posPossibles.size()));
 

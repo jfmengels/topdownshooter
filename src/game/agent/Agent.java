@@ -174,7 +174,6 @@ public class Agent implements Runnable, IDessinable {
 	public void setOrientation(double orientation) {
 		this.orientation = orientation;
 	}
-<<<<<<< HEAD
 
 	public void tirer(Agent cible) {
 		// Si un enemi est en vue, on va le viser et lui tirer dessus.
@@ -193,6 +192,4 @@ public class Agent implements Runnable, IDessinable {
 			}
 		}
 	}
-=======
->>>>>>> 1ed27d57665274a96ec4c9cd7f352da7f848532e
 }
