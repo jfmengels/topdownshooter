@@ -34,8 +34,11 @@ public class Environnement extends JPanel {
 		Equipe ouest = new Equipe(TagEquipe.OUEST, new Point(675, 450));
 		est.addPosDefense(new Point(50, 75));
 		est.addPosDefense(new Point(75, 50));
+<<<<<<< HEAD
 		ouest.addPosDefense(new Point(620, 475));
 		ouest.addPosDefense(new Point(600, 450));
+=======
+>>>>>>> 1ed27d57665274a96ec4c9cd7f352da7f848532e
 		this.equipes.add(est);
 		this.equipes.add(ouest);
 
@@ -43,6 +46,7 @@ public class Environnement extends JPanel {
 			decors.add(new Cible(equipe.getTag(), equipe.getPosCible()));
 		}
 		createWalls();
+<<<<<<< HEAD
 		// Ajout d'agents dans l'équipe est
 		agents.add(new Agent(est, new Point(150, 240), this));
 		agents.add(new Agent(est, new Point(600, 100), this));
@@ -52,6 +56,11 @@ public class Environnement extends JPanel {
 		agents.add(new Agent(ouest, new Point(460, 460), this));
 		agents.add(new Agent(ouest, new Point(410, 510), this));
 		agents.add(new Agent(ouest, new Point(510, 410), this));
+=======
+		agents.add(new Agent(est, new Point(150, 240), this));
+		agents.add(new Agent(est, new Point(600, 100), this));
+		agents.add(new Agent(est, new Point(600, 150), this));
+>>>>>>> 1ed27d57665274a96ec4c9cd7f352da7f848532e
 	}
 
 	private void createWalls() {
@@ -63,14 +72,22 @@ public class Environnement extends JPanel {
 		decors.add(new Mur(new Point(774, 0), new Dimension(10, 600),
 				Color.black));
 
+<<<<<<< HEAD
 		// Horizontal
+=======
+		// horinzontal
+>>>>>>> 1ed27d57665274a96ec4c9cd7f352da7f848532e
 		for (int i = 1; i < 3; i++) {
 			for (int j = 0; j < 11; j++) {
 				decors.add(new Mur(new Point(10 + j * 70, 10 + 190 * i),
 						new Dimension(50, 10), Color.darkGray));
 			}
 		}
+<<<<<<< HEAD
 		// Vertical
+=======
+		// vertical
+>>>>>>> 1ed27d57665274a96ec4c9cd7f352da7f848532e
 		for (int i = 1; i < 4; i++) {
 			for (int j = 0; j < 20; j++) {
 				decors.add(new Mur(new Point(10 + 190 * i, 10 + j * 70),
@@ -216,10 +233,15 @@ public class Environnement extends JPanel {
 				via = target;
 			}
 		}
+<<<<<<< HEAD
 		if (src != null) {
 			cheminOpti.add(src);
 		}
 		cheminOpti.add(destination);
+=======
+		cheminOpti.add(destination);
+
+>>>>>>> 1ed27d57665274a96ec4c9cd7f352da7f848532e
 		return cheminOpti;
 	}
 
