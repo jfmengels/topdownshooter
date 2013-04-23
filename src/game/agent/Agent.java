@@ -278,19 +278,31 @@ public class Agent implements Runnable, IDessinable {
 	public void tirer(Agent cible) {
 		// Si un ennemi est en vue, on va le viser et lui tirer dessus.
 		// On attend un moment pour viser et tirer.
+		this.setOrientation(cible.getPosition());
+		this.mouvement.pause();
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		// Est-ce que l'ennemi est toujours en vue ?
-		if (environnement.ennemisEnVue(this).contains(cible)) {
+		List<Agent> ennemis = environnement.ennemisEnVue(this);
+		if (ennemis.contains(cible)) {
 			boolean mort = environnement.tirer(this, cible);
 			if (mort) {
 				// Si on a tué l'ennemi, on notifie les alliés.
 				String message = "kill " + cible.getId();
 				this.getEquipe().ecrireTableau(this, message);
+				if (ennemis.size() == 1) {
+					// S'il n'y avait que cet ennemi en vue, on se reoriente
+					// comme avant de l'avoir vu.
+					this.mouvement.rectifierOrientation();
+				}
 			}
+		} else if (ennemis.isEmpty()) {
+			// Si on ne voit plus personne, on se reoriente comme avant d'avoir
+			// visé.
+			this.mouvement.rectifierOrientation();
 		}
 	}
 }

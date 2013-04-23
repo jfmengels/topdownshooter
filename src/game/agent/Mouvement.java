@@ -21,12 +21,15 @@ public class Mouvement {
 	 * @var tempsDepart: Moment auquel l'agent est parti, est lié à posDepart.
 	 * @var tempsEstime: Temps que va mettre l'agent pour atteindre sa
 	 *      destination (intermédiaire ou finale), est lié à tempsDepart.
+	 * @var tempsPause: Retient le moment où l'agent s'est mis en pause. Vaut à
+	 *      -1 s'il n'est pas en pause.
 	 */
 	private final Agent agent;
 	private final List<Point> destination;
 	private Point posDepart;
 	private long tempsDepart;
 	private long tempsEstime;
+	private long tempsPause;
 
 	/**
 	 * Créé un gestionaire de mouvement associé pour un agent.
@@ -35,6 +38,7 @@ public class Mouvement {
 	public Mouvement(Agent agent) {
 		this.agent = agent;
 		this.destination = new ArrayList<Point>();
+		tempsPause = -1;
 	}
 
 	/**
@@ -69,6 +73,15 @@ public class Mouvement {
 	public void bouger() {
 		long tempsMis;
 		boolean changeDirection = false;
+
+		// On regarde si l'agent était en pause (pour tirer sur un ennemi par
+		// exemple). Si oui, on va déduire le temps en pause au temps de départ,
+		// pour qu'il n'y ai pas de saut dans la position du jour.
+		if (tempsPause >= 0) {
+			tempsDepart += System.currentTimeMillis() - tempsPause;
+			tempsPause = -1;
+		}
+
 		if (!estArrete()) {
 			// Si l'agent doit encore se déplacer.
 			tempsMis = System.currentTimeMillis() - tempsDepart;
@@ -110,6 +123,16 @@ public class Mouvement {
 	}
 
 	/**
+	 * Rectifie l'orientation de l'agent. Nécessaire lorsque l'orientation de
+	 * l'agent a changé pour tirer sur un ennemi.
+	 */
+	public void rectifierOrientation() {
+		if (!estArrete()) {
+			agent.setOrientation(destination.get(0));
+		}
+	}
+
+	/**
 	 * Estime le temps que va mettre l'agent pour atteindre se destination, et
 	 * modifie les attributs en conséquence.
 	 */
@@ -122,5 +145,12 @@ public class Mouvement {
 		// Et on calcule le temps que mettra l'agent pour y aller.
 		tempsEstime = (long) (distance / agent.getVitesse() * 1000);
 		tempsDepart = System.currentTimeMillis();
+	}
+
+	/**
+	 * Pause le mouvement de l'agent.
+	 */
+	public void pause() {
+		tempsPause = System.currentTimeMillis();
 	}
 }
