@@ -30,7 +30,6 @@ public class EtatAttribution implements Etat {
 
 	public void entre(Agent agent, Environnement env) {
 		nbAgents = agent.getEquipe().getAgents().size() - 1;
-		System.out.println(agent.getId() + " " + nbAgents);
 	};
 
 	@Override
@@ -57,10 +56,7 @@ public class EtatAttribution implements Etat {
 		}
 		synchronized (this) {
 			compteurMessages++;
-			System.out.println(agent.getId() + " " + estOrga + " "
-					+ compteurMessages + " messages");
 			if (estOrga && compteurMessages >= nbAgents) {
-				System.out.println("Vas-y " + agent.getId());
 				agent.setEtat(agent.getEquipe().getOrganisation());
 			}
 		}

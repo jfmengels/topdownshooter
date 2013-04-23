@@ -123,7 +123,7 @@ public class Environnement extends JPanel {
 		return !vivant;
 	}
 
-public List<Point> cheminVers(Point depart, Point destination) {
+	public List<Point> cheminVers(Point depart, Point destination) {
 		boolean finished = false;
 		Set<Point> aTraiter = new HashSet<>();
 		aTraiter.add(destination);
@@ -217,7 +217,7 @@ public List<Point> cheminVers(Point depart, Point destination) {
 				via = target;
 			}
 		}
-		if ( src != null) {
+		if (src != null) {
 			cheminOpti.add(src);
 		}
 		cheminOpti.add(destination);
@@ -225,11 +225,11 @@ public List<Point> cheminVers(Point depart, Point destination) {
 	}
 
 	/**
-	 * Retourne la liste des enemis que peut voir un agent.
+	 * Retourne la liste des ennemis que peut voir un agent.
 	 * @param agent Agent observateur.
-	 * @return List des enemis visibles.
+	 * @return List des ennemis visibles.
 	 */
-	public List<Agent> enemisEnVue(Agent agentSource) {
+	public List<Agent> ennemisEnVue(Agent agentSource) {
 		ArrayList<Agent> liste = new ArrayList<>();
 		if (agentSource == null) {
 			return liste;
@@ -238,8 +238,8 @@ public List<Point> cheminVers(Point depart, Point destination) {
 		int x1, x2, y1, y2;
 		x1 = agentSource.getPosition().x;
 		y1 = agentSource.getPosition().y;
-		for (Agent agent : liste) {
-			if (agentSource.memeEquipe(agent)) {
+		for (Agent agent : agents) {
+			if (agentSource.memeEquipe(agent) || !agent.estEnVie()) {
 				continue;
 			}
 			x2 = agent.getPosition().x;
@@ -247,8 +247,11 @@ public List<Point> cheminVers(Point depart, Point destination) {
 			distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 			if (distance <= agentSource.getPortee() * agentSource.getPortee()) {
 				// gestion cone de vue
-				double angle = (x2-x1)*Math.cos(agentSource.getOrientation()) + (y2-y1)*Math.sin(-agentSource.getOrientation()) / Math.sqrt(distance);
-				if (angle < Math.cos(Math.PI/6)) {
+				double angle = (x2 - x1)
+						* Math.cos(agentSource.getOrientation()) + (y2 - y1)
+						* Math.sin(-agentSource.getOrientation())
+						/ Math.sqrt(distance);
+				if (angle < Math.cos(Math.PI / 6)) {
 					continue;
 				}
 				// gestions murs

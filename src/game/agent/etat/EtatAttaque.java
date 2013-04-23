@@ -21,9 +21,9 @@ public class EtatAttaque implements Etat {
 			List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
 			agent.getMouvement().setDestinations(chemin);
 		}
-		List<Agent> enemisEnVue = env.enemisEnVue(agent);
-		if (!enemisEnVue.isEmpty()) {
-			Agent cible = enemisEnVue.get(0);
+		List<Agent> ennemisEnVue = env.ennemisEnVue(agent);
+		if (!ennemisEnVue.isEmpty()) {
+			Agent cible = ennemisEnVue.get(0);
 			agent.tirer(cible);
 		} else {
 			agent.getMouvement().bouger();
