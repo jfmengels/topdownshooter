@@ -6,7 +6,6 @@ import game.agent.Agent;
 import java.awt.Point;
 
 public class EtatChasseur implements Etat {
-	// TODO Commenter EtatChasseur
 	/**
 	 * @var etatPrecedent: Etat dans lequel se trouvait précédement l'agent.
 	 * @var idCible: Cible courante de l'agent.
@@ -39,8 +38,6 @@ public class EtatChasseur implements Etat {
 
 	@Override
 	public void action(Agent agent, Environnement env) {
-		// TODO On ne revient pas dans l'état courant si c'est le chasseur qui
-		// tue la cible.
 		// On regarde si on a des ennemis en vue.
 		boolean ennemi = agent.voitEnnemi(); // Si oui, il va lui tirer dessus.
 		if (!ennemi) {
@@ -57,9 +54,6 @@ public class EtatChasseur implements Etat {
 			String str[] = message.split(" ");
 			int id = Integer.parseInt(str[1]);
 			if (id == idCible) {
-				// TODO Print
-				System.out.println("Chasseur " + agent.getId() + " redevient "
-						+ etatPrecedent);
 				agent.setEtat(etatPrecedent);
 			}
 		} else if (message.startsWith("voit")) {
@@ -84,8 +78,6 @@ public class EtatChasseur implements Etat {
 				if (distEnnemi < distAncienneCible) {
 					// ELle est plus proche, on va changer notre cible vers
 					// celui-ci.
-					// TODO Print
-					System.out.println(agent.getId() + " change cible: " + id);
 					this.idCible = id;
 					this.posSignale = p;
 					agent.allerVers(posSignale);
