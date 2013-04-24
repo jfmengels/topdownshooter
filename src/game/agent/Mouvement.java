@@ -46,7 +46,7 @@ public class Mouvement {
 	 * @param destinations Nouvelles destinations. Le dernier élément de la
 	 *            liste correspondra à la destination finale.
 	 */
-	public void setDestinations(List<Point> destinations) {
+	public synchronized void setDestinations(List<Point> destinations) {
 		// On supprime les destinations courantes.
 		destination.clear();
 		destination.addAll(destinations);
@@ -70,7 +70,7 @@ public class Mouvement {
 	/**
 	 * Bouge l'agent.
 	 */
-	public void bouger() {
+	public synchronized void bouger() {
 		long tempsMis;
 		boolean changeDirection = false;
 
@@ -126,7 +126,7 @@ public class Mouvement {
 	 * Rectifie l'orientation de l'agent. Nécessaire lorsque l'orientation de
 	 * l'agent a changé pour tirer sur un ennemi.
 	 */
-	public void rectifierOrientation() {
+	public synchronized void rectifierOrientation() {
 		if (!estArrete()) {
 			agent.setOrientation(destination.get(0));
 		}
@@ -136,7 +136,7 @@ public class Mouvement {
 	 * Estime le temps que va mettre l'agent pour atteindre se destination, et
 	 * modifie les attributs en conséquence.
 	 */
-	public void estimeTemps() {
+	public synchronized void estimeTemps() {
 		// On regarde la distance du point courant à la prochaine destination.
 		Point dest = destination.get(0);
 		int dx = dest.x - posDepart.x;

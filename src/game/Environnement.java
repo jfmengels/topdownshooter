@@ -377,7 +377,9 @@ public class Environnement extends JPanel {
 	}
 
 	/**
-	 * Indique la distance entre deux points.
+	 * Indique la distance entre deux points. Cette fonction retourne réellement
+	 * le carré de la distance pour des soucis de performance. Pour avoir la
+	 * distance réelle, utiliser la fonction distanceVers.
 	 * @param p Premier point.
 	 * @param q Deuxième point.
 	 * @return Le carré de la distance entre p et q.
@@ -391,6 +393,16 @@ public class Environnement extends JPanel {
 
 		// calculs lourds, resultats precis
 		return (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y);
+	}
+
+	/**
+	 * Indique la distance entre deux points.
+	 * @param p Premier point.
+	 * @param q Deuxième point.
+	 * @return La distance entre p et q.
+	 */
+	public double distanceVers(Point p, Point q) {
+		return Math.sqrt(distance(p, q));
 	}
 
 	/**

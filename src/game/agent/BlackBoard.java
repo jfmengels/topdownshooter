@@ -18,9 +18,16 @@ public class BlackBoard {
 	public void ecrire(Agent agent, String message) {
 		List<Agent> agents = agent.getEquipe().getAgents();
 		System.out.println(agent.getId() + " envoie\t" + message);
-		for (Agent a : agents) {
-			if (a != agent && a.estEnVie()) {
+
+		if (message.startsWith("kill")) {
+			for (Agent a : agents) {
 				a.recoitMessage(message);
+			}
+		} else {
+			for (Agent a : agents) {
+				if (a != agent && a.estEnVie()) {
+					a.recoitMessage(message);
+				}
 			}
 		}
 	}

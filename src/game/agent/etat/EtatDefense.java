@@ -34,16 +34,13 @@ public class EtatDefense implements Etat {
 			if (mouv.estArrete()
 					&& System.currentTimeMillis() >= tempsProchainMouvement) {
 				// S'il faut définir une nouvelle position de campement, on
-				// choisit
-				// une des positions prédéterminées au hasard
-
+				// choisit une des positions prédéterminées au hasard
 				List<Point> posPossibles = agent.getEquipe().getPosDefense();
-				Point cible = posPossibles
+				Point dest = posPossibles
 						.get(rand.nextInt(posPossibles.size()));
-
 				// Et on dit à l'agent d'y aller.
-				List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
-				mouv.setDestinations(chemin);
+				agent.allerVers(dest);
+
 			} else if (!mouv.estArrete()) {
 				// Continuer le mouvement
 				mouv.bouger();
@@ -59,6 +56,21 @@ public class EtatDefense implements Etat {
 
 	@Override
 	public void recoitMessage(Agent agent, Environnement env, String message) {
+		if (message.startsWith("voit")) {
+			// Si on nous indique la position d'un agent ennemi.
+			String str[] = message.split(" ");
+			int id = Integer.parseInt(str[1]);
+			int x = Integer.parseInt(str[2]);
+			int y = Integer.parseInt(str[3]);
+			Point p = new Point(x, y);
+
+			if (env.distanceVers(agent.getPosition(), p) < agent.getPortee() * 1.5) {
+				// Et que celui-ci est relativement proche, on va se diriger
+				// vers lui et le chasser.
+				EtatChasseur nvEtat = new EtatChasseur(new EtatAttaque(), id, p);
+				agent.setEtat(nvEtat);
+			}
+		}
 	}
 
 }

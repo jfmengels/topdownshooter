@@ -259,25 +259,37 @@ public class Agent implements Runnable, IDessinable {
 			double cos = adja / hypo;
 			double angle = Math.acos(cos);
 			if (destination.y > position.y) {
-				angle *= -1;
+				angle = -angle;
 			}
 			this.orientation = angle;
 		}
 	}
 
+	/**
+	 * Regarde s'il y a des ennemis en vue, et si oui, réagit à leur présence.
+	 * @return true si il y a au moins un ennemi en vue, false sinon.
+	 */
 	public boolean voitEnnemi() {
 		List<Agent> ennemisEnVue = environnement.ennemisEnVue(this);
-		boolean ennemi = !ennemisEnVue.isEmpty();
-		if (ennemi) {
+		boolean ennemiPresent = !ennemisEnVue.isEmpty();
+		if (ennemiPresent) {
+			// S'il y a des ennemis en vue, on notifie les alliés de la position
+			// de chacun.
+			for (Agent ennemi : ennemisEnVue) {
+				Point pos = ennemi.getPosition();
+				String message = "voit " + ennemi.getId() + " " + pos.x + " "
+						+ pos.y;
+				getEquipe().ecrireTableau(this, message);
+			}
 			Agent cible = ennemisEnVue.get(0);
 			this.tirer(cible);
 		}
-		return ennemi;
+		return ennemiPresent;
 	}
 
 	public void tirer(Agent cible) {
 		// Si un ennemi est en vue, on va le viser et lui tirer dessus.
-		// On attend un moment pour viser et tirer.
+		// On attend un moment pour tirer.
 		this.setOrientation(cible.getPosition());
 		this.mouvement.pause();
 		try {
@@ -304,5 +316,10 @@ public class Agent implements Runnable, IDessinable {
 			// visé.
 			this.mouvement.rectifierOrientation();
 		}
+	}
+
+	public void allerVers(Point dest) {
+		List<Point> chemin = environnement.cheminVers(getPosition(), dest);
+		this.getMouvement().setDestinations(chemin);
 	}
 }

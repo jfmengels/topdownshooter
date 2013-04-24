@@ -4,7 +4,6 @@ import game.Environnement;
 import game.agent.Agent;
 
 import java.awt.Point;
-import java.util.List;
 
 public class EtatAttaque implements Etat {
 
@@ -17,9 +16,8 @@ public class EtatAttaque implements Etat {
 	@Override
 	public void action(Agent agent, Environnement env) {
 		if (agent.getMouvement().estArrete()) {
-			Point cible = env.autreEquipe(agent.getEquipe()).getPosCible();
-			List<Point> chemin = env.cheminVers(agent.getPosition(), cible);
-			agent.getMouvement().setDestinations(chemin);
+			Point dest = env.autreEquipe(agent.getEquipe()).getPosCible();
+			agent.allerVers(dest);
 		}
 		// On regarde si on a des ennemis en vue.
 		boolean ennemi = agent.voitEnnemi(); // Si oui, il va lui tirer dessus.
@@ -38,6 +36,20 @@ public class EtatAttaque implements Etat {
 
 	@Override
 	public void recoitMessage(Agent agent, Environnement env, String message) {
+		if (message.startsWith("voit")) {
+			// Si on nous indique la position d'un agent ennemi.
+			String str[] = message.split(" ");
+			int id = Integer.parseInt(str[1]);
+			int x = Integer.parseInt(str[2]);
+			int y = Integer.parseInt(str[3]);
+			Point p = new Point(x, y);
 
+			if (env.distanceVers(agent.getPosition(), p) < agent.getPortee() * 2) {
+				// Et que celui-ci est relativement proche, on va se diriger
+				// vers lui et le chasser.
+				EtatChasseur nvEtat = new EtatChasseur(new EtatAttaque(), id, p);
+				agent.setEtat(nvEtat);
+			}
+		}
 	}
 }
