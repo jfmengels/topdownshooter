@@ -5,6 +5,11 @@ import game.agent.Agent;
 
 import java.util.Random;
 
+/**
+ * Etat où l'agent va élire un organisateur, puis attendre que celui-ci lui
+ * attribue un rôle.
+ * @author Jeroen Engels et Florent Claisse
+ */
 public class EtatAttribution implements Etat {
 
 	private int randomToken;
@@ -13,6 +18,9 @@ public class EtatAttribution implements Etat {
 	private int nbAgents;
 	private boolean tokenEnvoye;
 
+	/**
+	 * Créé un nouvel état d'attribution.
+	 */
 	public EtatAttribution() {
 		randomToken = new Random().nextInt();
 		estOrga = true;
@@ -28,6 +36,7 @@ public class EtatAttribution implements Etat {
 		}
 	}
 
+	@Override
 	public void entre(Agent agent, Environnement env) {
 		nbAgents = agent.getEquipe().getAgents().size() - 1;
 	};
@@ -39,9 +48,13 @@ public class EtatAttribution implements Etat {
 		} else if (message.startsWith("setEtat")) {
 			interpreteEtat(agent, message);
 		} else if (message.startsWith("demandeData")) {
-			envoieDonnees(agent, message);
+			envoieDonnees(agent);
 		}
-		// Ignore le reste.
+	}
+
+	@Override
+	public String getComportement() {
+		return compAutre;
 	}
 
 	/**
@@ -84,19 +97,13 @@ public class EtatAttribution implements Etat {
 		}
 	}
 
-	
 	/**
-	 * Envoie des données qui concernent l'agent, à destination de l'agent organisateur.
-	 * @param agent
-	 * @param message
+	 * Envoie des données qui concernent l'agent, à destination de l'agent
+	 * organisateur.
+	 * @param agent Agent dont on représente l'état.
 	 */
-	private void envoieDonnees(Agent agent, String message) {
-		int vitesse = (int) agent.getVitesse();
-		int portee = agent.getPortee();
-		int degats = agent.getDegats();
-		int vieMax = agent.getVieMax();
-		String str = "dataAgent " + agent.getId() + " " + vitesse + " "
-				+ portee + " " + degats + " " + vieMax;
-		agent.getEquipe().ecrireTableau(agent, str);
+	private void envoieDonnees(Agent agent) {
+		String attributs = agent.getAttributs();
+		agent.getEquipe().ecrireTableau(agent, attributs);
 	}
 }

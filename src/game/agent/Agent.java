@@ -68,6 +68,14 @@ public class Agent implements Runnable, IDessinable {
 	 */
 	private boolean threadRunning;
 
+	/**
+	 * Constantes pour le paramétrage de l'agent.
+	 * @var VIEMAX VIEMIN: Bornes pour le nombre de points de vie.
+	 * @var VITESSEMAX VITESSEMIN: Bornes pour la vitesse.
+	 * @var PORTEEMAX PORTEEMIN: Bornes pour la portée.
+	 * @var DEGATSMAX DEGATSMIN: Bornes pour le nombre de dégâts.
+	 * @var ANGLE: Taille de l'angle de vue, en radians.
+	 */
 	public static final int VIEMAX = 30;
 	public static final int VIEMIN = 29;
 	public static final int VITESSEMAX = 40;
@@ -120,28 +128,49 @@ public class Agent implements Runnable, IDessinable {
 	}
 
 	/**
-	 * Arrete le thread courant.
+	 * Arrête le thread courant.
 	 */
 	public void terminate() {
 		threadRunning = false;
 	}
 
+	/**
+	 * Retourne la position de l'agent.
+	 * @return Point
+	 */
 	public Point getPosition() {
 		return position;
 	}
 
+	/**
+	 * Modifie la position de l'agent.
+	 * @param position Nouvelle position
+	 */
 	public void setPosition(Point position) {
 		this.position = position;
 	}
 
+	/**
+	 * Modifie la position de l'agent.
+	 * @param x Position sur l'axe des abscisses.
+	 * @param y Position sur l'axe des ordonnées.
+	 */
 	public void setPosition(int x, int y) {
 		this.position = new Point(x, y);
 	}
 
+	/**
+	 * Retourne le nombre de points de vie actuel de l'agent.
+	 * @return int
+	 */
 	public int getVieActuelle() {
 		return vieActuelle;
 	}
 
+	/**
+	 * Retourne le nombre de points de vie maximum de l'agent.
+	 * @return int
+	 */
 	public int getVieMax() {
 		return vieMax;
 	}
@@ -154,23 +183,42 @@ public class Agent implements Runnable, IDessinable {
 	public boolean toucher(int pv) {
 		vieActuelle -= pv;
 		if (vieActuelle < 0) {
+			// Si l'agent meurt, il va prévenir les autres de son équipe.
 			vieActuelle = 0;
+			String message = "mort " + getId() + " " + etat.getComportement();
+			equipe.ecrireTableau(this, message);
 		}
 		return estEnVie();
 	}
 
+	/**
+	 * Indique si l'agent est en vie.
+	 * @return true si l'agent est en vie, false sinon.
+	 */
 	public boolean estEnVie() {
 		return vieActuelle > 0;
 	}
 
+	/**
+	 * Retourne la vitesse de l'agent.
+	 * @return vitesse
+	 */
 	public double getVitesse() {
 		return vitesse;
 	}
 
+	/**
+	 * Retourne le gestionnaire de mouvement de l'agent.
+	 * @return {@link Mouvement}
+	 */
 	public Mouvement getMouvement() {
 		return mouvement;
 	}
 
+	/**
+	 * Retourne l'équipe à laquelle appartient l'agent.
+	 * @return {@link Equipe}
+	 */
 	public Equipe getEquipe() {
 		return equipe;
 	}
@@ -210,43 +258,83 @@ public class Agent implements Runnable, IDessinable {
 		g.drawString(getId() + "", position.x + 3, position.y + 3);
 	}
 
+	/**
+	 * Indique si l'agent est de la même équipe qu'un autre agent.
+	 * @param agent Agent dont on veut comparer l'équipe.
+	 * @return true si les deux agents sont de la même équipe, false sinon.
+	 */
 	public boolean memeEquipe(Agent agent) {
-		return this.equipe.getTag() == agent.equipe.getTag();
+		return this.equipe.getTag().equals(agent.equipe.getTag());
 	}
 
+	/**
+	 * Retourne l'état courant de l'agent.
+	 * @return {@link Etat}
+	 */
 	public Etat getEtat() {
 		return etat;
 	}
 
+	/**
+	 * Modifie l'état de l'agent.
+	 * @param etat Nouvel état.
+	 */
 	public void setEtat(Etat etat) {
 		this.etat = etat;
 		this.etat.entre(this, environnement);
 	}
 
+	/**
+	 * Retourne l'identifiant unique de l'agent.
+	 * @return int
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * Retourne le nombre de dégâts qu'inflige l'agent.
+	 * @return int
+	 */
 	public int getDegats() {
 		return degats;
 	}
 
+	/**
+	 * Reçoit et intérprète un message.
+	 * @param message Message reçu.
+	 */
 	public void recoitMessage(String message) {
 		this.etat.recoitMessage(this, environnement, message);
 	}
 
+	/**
+	 * Retourne la portée dont dispose l'agent.
+	 * @return int
+	 */
 	public int getPortee() {
 		return (int) portee;
 	}
 
+	/**
+	 * Initialise l'agent, notamment son état.
+	 */
 	public void init() {
 		this.etat.entre(this, environnement);
 	}
 
+	/**
+	 * Retourne l'orientation de l'agent.
+	 * @return Orientation, en radians.
+	 */
 	public double getOrientation() {
 		return orientation;
 	}
 
+	/**
+	 * Change l'orientation de l'agent.
+	 * @param destination Point vers lequel l'agent doit se tourner.
+	 */
 	public void setOrientation(Point destination) {
 		double hypo;
 		double adja;
@@ -279,7 +367,7 @@ public class Agent implements Runnable, IDessinable {
 				Point pos = ennemi.getPosition();
 				String message = "voit " + ennemi.getId() + " " + pos.x + " "
 						+ pos.y;
-				getEquipe().ecrireTableau(this, message);
+				equipe.ecrireTableau(this, message);
 			}
 			Agent cible = ennemisEnVue.get(0);
 			this.tirer(cible);
@@ -287,6 +375,10 @@ public class Agent implements Runnable, IDessinable {
 		return ennemiPresent;
 	}
 
+	/**
+	 * Commence la procédure de tir sur un ennemi.
+	 * @param cible Agent sur lequel tirer.
+	 */
 	public void tirer(Agent cible) {
 		// Si un ennemi est en vue, on va le viser et lui tirer dessus.
 		// On attend un moment pour tirer.
@@ -297,29 +389,57 @@ public class Agent implements Runnable, IDessinable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		// Est-ce que l'ennemi est toujours en vue ?
-		List<Agent> ennemis = environnement.ennemisEnVue(this);
-		if (ennemis.contains(cible)) {
-			boolean mort = environnement.tirer(this, cible);
-			if (mort) {
-				// Si on a tué l'ennemi, on notifie les alliés.
-				String message = "kill " + cible.getId();
-				this.getEquipe().ecrireTableau(this, message);
-				if (ennemis.size() == 1) {
-					// S'il n'y avait que cet ennemi en vue, on se reoriente
-					// comme avant de l'avoir vu.
-					this.mouvement.rectifierOrientation();
-				}
+
+		// Si l'agent est encore en vie
+		if (estEnVie()) {
+			// On va de nouveau regarder qui est en vue.
+			List<Agent> ennemis = environnement.ennemisEnVue(this);
+			// S'il y a des ennemis en vue, on notifie les alliés de la position
+			// de chacun.
+			for (Agent ennemi : ennemis) {
+				Point pos = ennemi.getPosition();
+				String message = "voit " + ennemi.getId() + " " + pos.x + " "
+						+ pos.y;
+				equipe.ecrireTableau(this, message);
 			}
-		} else if (ennemis.isEmpty()) {
-			// Si on ne voit plus personne, on se reoriente comme avant d'avoir
-			// visé.
-			this.mouvement.rectifierOrientation();
+
+			// Est-ce que l'ennemi est toujours en vue ?
+			if (ennemis.contains(cible)) {
+				boolean mort = environnement.tirer(this, cible);
+				if (mort) {
+					// Si on a tué l'ennemi, on notifie les alliés.
+					String message = "kill " + cible.getId();
+					this.equipe.ecrireTableau(this, message);
+					if (ennemis.size() == 1) {
+						// S'il n'y avait que cet ennemi en vue, on se reoriente
+						// comme avant de l'avoir vu.
+						this.mouvement.rectifierOrientation();
+					}
+				}
+			} else if (ennemis.isEmpty()) {
+				// Si on ne voit plus personne, on se reoriente comme avant
+				// d'avoir visé.
+				this.mouvement.rectifierOrientation();
+			}
 		}
 	}
 
+	/**
+	 * Planifie le déplacement vers un point.
+	 * @param dest Point de destination.
+	 */
 	public void allerVers(Point dest) {
 		List<Point> chemin = environnement.cheminVers(getPosition(), dest);
 		this.getMouvement().setDestinations(chemin);
+	}
+
+	/**
+	 * Retourne une représentation textuelle des attributs de l'agent, à but
+	 * d'être communiqué entre agents.
+	 * @return String
+	 */
+	public String getAttributs() {
+		return "dataAgent " + id + " " + (int) vitesse + " " + portee + " "
+				+ degats + " " + vieMax;
 	}
 }

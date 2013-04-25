@@ -21,11 +21,13 @@ public class BlackBoard {
 
 		if (message.startsWith("kill")) {
 			for (Agent a : agents) {
-				a.recoitMessage(message);
+				if (a.estEnVie()) {
+					a.recoitMessage(message);
+				}
 			}
 		} else {
 			for (Agent a : agents) {
-				if (a != agent && a.estEnVie()) {
+				if (!a.equals(agent) && a.estEnVie()) {
 					a.recoitMessage(message);
 				}
 			}

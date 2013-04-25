@@ -85,4 +85,9 @@ public class EtatChasseur implements Etat {
 			}
 		}
 	}
+
+	@Override
+	public String getComportement() {
+		return etatPrecedent.getComportement();
+	}
 }

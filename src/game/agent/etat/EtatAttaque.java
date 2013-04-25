@@ -5,12 +5,16 @@ import game.agent.Agent;
 
 import java.awt.Point;
 
+/**
+ * Etat où l'agent vise à atteindre la cible adverse.
+ * @author Jeroen Engels et Florent Claisse
+ */
 public class EtatAttaque implements Etat {
 
 	@Override
 	public void entre(Agent agent, Environnement env) {
 		System.out.println(agent.getId() + "\tAttaque");
-
+		agent.getMouvement().arrete();
 	}
 
 	@Override
@@ -51,5 +55,10 @@ public class EtatAttaque implements Etat {
 				agent.setEtat(nvEtat);
 			}
 		}
+	}
+
+	@Override
+	public String getComportement() {
+		return compAttaque;
 	}
 }

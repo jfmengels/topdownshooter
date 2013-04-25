@@ -150,7 +150,14 @@ public class Mouvement {
 	/**
 	 * Pause le mouvement de l'agent.
 	 */
-	public void pause() {
+	public synchronized void pause() {
 		tempsPause = System.currentTimeMillis();
+	}
+
+	/**
+	 * Arrête le mouvement de l'agent.
+	 */
+	public synchronized void arrete() {
+		this.destination.clear();
 	}
 }
