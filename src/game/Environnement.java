@@ -53,15 +53,15 @@ public class Environnement extends JPanel {
 		Equipe est = new Equipe(TagEquipe.EST, new Point(100, 100));
 		Equipe ouest = new Equipe(TagEquipe.OUEST, new Point(675, 450));
 
-		est.addPosDefense(new Point(70, 190));
-		est.addPosDefense(new Point(140, 190));
-		est.addPosDefense(new Point(190, 140));
-		est.addPosDefense(new Point(190, 70));
+		est.addPosDefense(new Point(70, 190), new Point(70, 210));
+		est.addPosDefense(new Point(140, 190), new Point(140, 210));
+		est.addPosDefense(new Point(190, 140), new Point(210, 140));
+		est.addPosDefense(new Point(190, 70), new Point(210, 70));
 
-		ouest.addPosDefense(new Point(600, 420));
-		ouest.addPosDefense(new Point(600, 490));
-		ouest.addPosDefense(new Point(630, 410));
-		ouest.addPosDefense(new Point(700, 410));
+		ouest.addPosDefense(new Point(600, 420), new Point(580, 420));
+		ouest.addPosDefense(new Point(600, 490), new Point(580, 490));
+		ouest.addPosDefense(new Point(630, 410), new Point(630, 390));
+		ouest.addPosDefense(new Point(700, 410), new Point(700, 390));
 
 		this.equipes.add(est);
 		this.equipes.add(ouest);

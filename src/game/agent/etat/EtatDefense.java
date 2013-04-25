@@ -10,6 +10,11 @@ import java.util.Random;
 
 public class EtatDefense implements Etat {
 
+	/**
+	 * @var tempsProchainMouvement: Moment où on va se redéplacer vers une
+	 *      nouvelle position stratégique.
+	 * @var rand: générateur de nombres aléatoires.
+	 */
 	private long tempsProchainMouvement;
 	private final Random rand;
 
@@ -49,6 +54,13 @@ public class EtatDefense implements Etat {
 					// reste à cette position.
 					tempsProchainMouvement = System.currentTimeMillis()
 							+ (rand.nextInt(4) + 1) * 500;
+
+					// On va regarder vers le point associé à cette position
+					// stratégique.
+					Point pos = agent.getPosition();
+					Point orientation = agent.getEquipe()
+							.getOrientationDefense(pos);
+					agent.setOrientation(orientation);
 				}
 			}
 		}

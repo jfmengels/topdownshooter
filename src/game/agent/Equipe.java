@@ -6,7 +6,9 @@ import game.agent.etat.EtatOrganisation;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Equipe d'agents.
@@ -23,6 +25,7 @@ public class Equipe {
 	 *      l'équipe doivent protéger, pas attaquer.
 	 * @var posDefense: Positions stratégiques de défense pour protéger la
 	 *      cible.
+	 * @var posDefenseOrientation:
 	 * @var organisation: Etat organisation dans lequel un état passe pour
 	 *      attribuer les rôles aux agents.
 	 */
@@ -32,6 +35,7 @@ public class Equipe {
 	private final Color couleur;
 	private final Point posCible;
 	private final List<Point> posDefense;
+	private final Map<Point, Point> posDefenseOrientation;
 	private final EtatOrganisation organisation;
 
 	/**
@@ -45,6 +49,7 @@ public class Equipe {
 		this.tag = tag;
 		this.blackBoard = new BlackBoard();
 		this.posDefense = new ArrayList<Point>();
+		this.posDefenseOrientation = new HashMap<Point, Point>();
 		this.organisation = new EtatOrganisation();
 
 		// On attribue une couleur en fonction de l'équipe.
@@ -107,9 +112,11 @@ public class Equipe {
 	/**
 	 * Ajoute une position stratégique de défense.
 	 * @param pos {@link Point}
+	 * @param orientation Point vers lequel regarder au point.
 	 */
-	public void addPosDefense(Point pos) {
+	public void addPosDefense(Point pos, Point orientation) {
 		posDefense.add(pos);
+		posDefenseOrientation.put(pos, orientation);
 	}
 
 	/**
@@ -118,6 +125,15 @@ public class Equipe {
 	 */
 	public List<Point> getPosDefense() {
 		return posDefense;
+	}
+
+	/**
+	 * Retourne l'orientation
+	 * @param pos Position stratégique de défense.
+	 * @return Point vers lequel regarder.
+	 */
+	public Point getOrientationDefense(Point pos) {
+		return posDefenseOrientation.get(pos);
 	}
 
 	/**
