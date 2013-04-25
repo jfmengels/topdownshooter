@@ -43,6 +43,12 @@ public class EtatChasseur implements Etat {
 		if (!ennemi) {
 			// Sinon, on se déplace.
 			agent.getMouvement().bouger();
+			if (agent.getPosition().equals(posSignale)) {
+				// On a atteint la position où la cible a été signalée, et il
+				// n'y a personne en vue. On se remet alors dans l'état
+				// d'origine.
+				agent.setEtat(etatPrecedent);
+			}
 		}
 	}
 

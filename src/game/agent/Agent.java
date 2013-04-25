@@ -122,8 +122,10 @@ public class Agent implements Runnable, IDessinable {
 	@Override
 	public void run() {
 		threadRunning = true;
-		while (threadRunning) { // Si on peut toujours
-			this.etat.action(this, environnement);
+		while (threadRunning && estEnVie()) {
+			synchronized (this) {
+				this.etat.action(this, environnement);
+			}
 		}
 	}
 
@@ -277,11 +279,13 @@ public class Agent implements Runnable, IDessinable {
 
 	/**
 	 * Modifie l'état de l'agent.
-	 * @param etat Nouvel état.
+	 * @param nvEtat Nouvel état.
 	 */
-	public void setEtat(Etat etat) {
-		this.etat = etat;
-		this.etat.entre(this, environnement);
+	public void setEtat(Etat nvEtat) {
+		synchronized (this) {
+			nvEtat.entre(this, environnement);
+			this.etat = nvEtat;
+		}
 	}
 
 	/**

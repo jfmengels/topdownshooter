@@ -435,6 +435,9 @@ public class Environnement extends JPanel {
 		for (Agent agent : this.agents) {
 			agent.terminate();
 		}
+		for (Equipe equ : equipes) {
+			equ.getBlackBoard().terminate();
+		}
 	}
 
 	/**
