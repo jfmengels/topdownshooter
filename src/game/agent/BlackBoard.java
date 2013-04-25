@@ -64,4 +64,11 @@ public class BlackBoard implements Runnable {
 			}
 		}
 	}
+
+	/**
+	 * Arrête le thread courant.
+	 */
+	public void terminate() {
+		threadRunning = false;
+	}
 }
