@@ -12,6 +12,7 @@ public interface Etat {
 	public static final String compAttaque = "attaque";
 	public static final String compDefense = "defense";
 	public static final String compAutre = "autre";
+	public static final EtatCommun commun = new EtatCommun();
 
 	/**
 	 * Rentre dans l'état et initialise des données si nécessaire.
@@ -28,7 +29,7 @@ public interface Etat {
 	public void action(Agent agent, Environnement env);
 
 	/**
-	 * /** Lis un message envoyé.
+	 * Lit un message envoyé.
 	 * @param agent Agent dont on représente l'état.
 	 * @param env Environnement du jeu.
 	 * @param message Message à lire.

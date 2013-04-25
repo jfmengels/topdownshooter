@@ -83,6 +83,8 @@ public class EtatChasseur implements Etat {
 					agent.allerVers(posSignale);
 				}
 			}
+		} else {
+			commun.recoitMessage(agent, env, message);
 		}
 	}
 

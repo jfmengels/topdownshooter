@@ -47,8 +47,8 @@ public class EtatAttribution implements Etat {
 			interpreteToken(agent, message);
 		} else if (message.startsWith("setEtat")) {
 			interpreteEtat(agent, message);
-		} else if (message.startsWith("demandeData")) {
-			envoieDonnees(agent);
+		} else {
+			commun.recoitMessage(agent, env, message);
 		}
 	}
 
@@ -95,15 +95,5 @@ public class EtatAttribution implements Etat {
 				agent.setEtat(new EtatDefense());
 			}
 		}
-	}
-
-	/**
-	 * Envoie des données qui concernent l'agent, à destination de l'agent
-	 * organisateur.
-	 * @param agent Agent dont on représente l'état.
-	 */
-	private void envoieDonnees(Agent agent) {
-		String attributs = agent.getAttributs();
-		agent.getEquipe().ecrireTableau(agent, attributs);
 	}
 }

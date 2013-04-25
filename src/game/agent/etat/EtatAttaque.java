@@ -54,6 +54,8 @@ public class EtatAttaque implements Etat {
 				EtatChasseur nvEtat = new EtatChasseur(new EtatAttaque(), id, p);
 				agent.setEtat(nvEtat);
 			}
+		} else {
+			commun.recoitMessage(agent, env, message);
 		}
 	}
 
