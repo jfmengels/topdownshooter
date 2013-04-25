@@ -118,6 +118,11 @@ public class Environnement extends JPanel {
 	 * Commence l'exécution de l'environnement.
 	 */
 	public void start() {
+		// On initialise les blackboards de chaque équipe.
+		for (Equipe equipe : this.equipes) {
+			new Thread(equipe.getBlackBoard()).start();
+		}
+
 		// On initialise les agents pour les informations qui ne peuvent pas
 		// être données lors de leur création et qui doivent être prêtes lors de
 		// l'exécution du thread.

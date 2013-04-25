@@ -47,7 +47,7 @@ public class Equipe {
 		this.posCible = cible;
 		this.agents = new ArrayList<Agent>();
 		this.tag = tag;
-		this.blackBoard = new BlackBoard();
+		this.blackBoard = new BlackBoard(this);
 		this.posDefense = new ArrayList<Point>();
 		this.posDefenseOrientation = new HashMap<Point, Point>();
 		this.organisation = new EtatOrganisation();
@@ -177,5 +177,9 @@ public class Equipe {
 	 */
 	public void end(Environnement env) {
 		env.end(this);
+	}
+
+	public BlackBoard getBlackBoard() {
+		return blackBoard;
 	}
 }
