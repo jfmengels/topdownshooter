@@ -22,18 +22,21 @@ public class EtatDefense implements Etat {
 	 * @var compDemandeId: Identifiant de la demande de comportement.
 	 * @var resultatDemande: Compteur de non-attaquants du résultat de la
 	 *      demande de comportement.
+	 * @var defenseDemandeId: Identifiant de la demande de défense.
 	 */
 	private long tempsProchainMouvement;
 	private Point dest;
 	private final Random rand;
 	private int compDemandeId;
 	private int resultatDemande;
+	private int defenseDemandeId;
 
 	public EtatDefense() {
 		rand = new Random();
 		tempsProchainMouvement = 0;
 		compDemandeId = 0;
 		resultatDemande = Integer.MIN_VALUE;
+		defenseDemandeId = 0;
 	}
 
 	@Override
@@ -42,6 +45,7 @@ public class EtatDefense implements Etat {
 		System.out.println(agent.getId() + "\tDefense");
 		agent.getMouvement().arrete();
 		tempsProchainMouvement = 0;
+		nvPositionDefense(agent);
 	}
 
 	@Override
@@ -53,12 +57,8 @@ public class EtatDefense implements Etat {
 			Mouvement mouv = agent.getMouvement();
 			if (mouv.estArrete()
 					&& System.currentTimeMillis() >= tempsProchainMouvement) {
-				// S'il faut définir une nouvelle position de campement, on
-				// choisit une des positions prédéterminées au hasard
-				List<Point> posPossibles = agent.getEquipe().getPosDefense();
-				this.dest = posPossibles.get(rand.nextInt(posPossibles.size()));
-				// Et on dit à l'agent d'y aller.
-				agent.allerVers(dest);
+				// Il faut définir une nouvelle position de défense.
+				nvPositionDefense(agent);
 			} else if (!mouv.estArrete()) {
 				// Continuer le mouvement
 				mouv.bouger();
@@ -76,10 +76,6 @@ public class EtatDefense implements Etat {
 								.getOrientationDefense(pos);
 						agent.setOrientation(orientation);
 					} else {
-						if (dest == null) {
-							// TODO Print
-							System.out.println("dest null " + agent.getId());
-						}
 						agent.allerVers(dest);
 					}
 				}
@@ -87,14 +83,39 @@ public class EtatDefense implements Etat {
 		}
 	}
 
+	/**
+	 * Définit une nouvelle position de défense, et demande aux autres agents si
+	 * la position est déjà couverte.
+	 * @param agent Agent dont on représente l'état.
+	 */
+	private void nvPositionDefense(Agent agent) {
+		// On choisit une des positions prédéterminées au hasard
+		List<Point> posPossibles = agent.getEquipe().getPosDefense();
+		this.dest = posPossibles.get(rand.nextInt(posPossibles.size()));
+		// Et on dit à l'agent d'y aller.
+		agent.allerVers(dest);
+		// On va ensuite demander à tous les agents en défense si la position
+		// est déjà couverte, ou si elle va bientôt l'être.
+		String message;
+		synchronized (this) {
+			message = "defenseDemande " + agent.getId() + " "
+					+ (++defenseDemandeId) + " " + dest.x + " " + dest.y;
+		}
+		agent.getEquipe().ecrireTableau(agent, message);
+	}
+
 	@Override
 	public void recoitMessage(Agent agent, Environnement env, String message) {
 		if (message.startsWith("voit")) {
 			reagitVoit(agent, env, message);
 		} else if (message.startsWith("mort")) {
-			reagitMort(agent, env, message);
+			reagitMort(agent, message);
 		} else if (message.startsWith("comp")) {
-			reagitComp(agent, env, message);
+			reagitComp(agent, message);
+		} else if (message.startsWith("defenseDemande")) {
+			reagitDefenseDemande(agent, message);
+		} else if (message.startsWith("defenseRep")) {
+			reagitDefenseRep(agent, message);
 		} else {
 			commun.recoitMessage(agent, env, message);
 		}
@@ -125,10 +146,9 @@ public class EtatDefense implements Etat {
 	/**
 	 * Réagit à une annonce de décès d'un agent ami.
 	 * @param agent Agent dont on représente l'état.
-	 * @param env Environnement du jeu.
 	 * @param message Message à lire.
 	 */
-	private void reagitMort(Agent agent, Environnement env, String message) {
+	private void reagitMort(Agent agent, String message) {
 		// Si on nous indique la mort d'un agent ami
 		String comportement = message.split(" ")[2];
 		if (comportement.equals(compAttaque)) {
@@ -156,10 +176,9 @@ public class EtatDefense implements Etat {
 	/**
 	 * Réagit à une réponse de demande de comportement.
 	 * @param agent Agent dont on représente l'état.
-	 * @param env Environnement du jeu.
 	 * @param message Message à lire.
 	 */
-	private void reagitComp(Agent agent, Environnement env, String message) {
+	private void reagitComp(Agent agent, String message) {
 		// On reçoit un message de réponse à la demande de comportement.
 		// On va regarder s'il nous est destiné, et s'il correspond à notre
 		// dernière demande.
@@ -189,6 +208,39 @@ public class EtatDefense implements Etat {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Réagit à une réponde, suite à une demande de duplication de position de
+	 * défense.
+	 * @param agent Agent dont on représente l'état.
+	 * @param message Message à lire.
+	 */
+	private void reagitDefenseRep(Agent agent, String message) {
+		String str[] = message.split(" ");
+		int id = Integer.parseInt(str[1]);
+		int idDemande = Integer.parseInt(str[2]);
+		boolean conflit = Boolean.parseBoolean(str[3]);
+		if (id == agent.getId() && idDemande == defenseDemandeId && conflit) {
+			nvPositionDefense(agent);
+		}
+	}
+
+	/**
+	 * Réagit à une demande de duplication de position de défense.
+	 * @param agent Agent dont on représente l'état.
+	 * @param message Message à lire.
+	 */
+	private void reagitDefenseDemande(Agent agent, String message) {
+		String str[] = message.split(" ");
+		int id = Integer.parseInt(str[1]);
+		int idDemande = Integer.parseInt(str[2]);
+		int x = Integer.parseInt(str[3]);
+		int y = Integer.parseInt(str[4]);
+		boolean aMemeDest = dest.x == x && dest.y == y;
+		String nvMessage = "defenseRep " + id + " " + idDemande + " "
+				+ aMemeDest;
+		agent.getEquipe().ecrireTableau(agent, nvMessage);
 	}
 
 	@Override
