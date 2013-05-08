@@ -12,6 +12,7 @@ import java.util.Random;
  */
 public class EtatAttribution implements Etat {
 
+	private static final Random rand = new Random();
 	private int randomToken;
 	private boolean estOrga;
 	private int compteurMessages;
@@ -22,7 +23,7 @@ public class EtatAttribution implements Etat {
 	 * Créé un nouvel état d'attribution.
 	 */
 	public EtatAttribution() {
-		randomToken = new Random().nextInt();
+		randomToken = rand.nextInt();
 		estOrga = true;
 		compteurMessages = 0;
 		tokenEnvoye = false;
